@@ -11,22 +11,6 @@ pnpm add clui-vue
 
 Peer dependency: `vue` ^3.5.
 
-## Component gallery (this repo)
-
-The `website/` package is a static Vite app that showcases every `Ui*` component. From the repository root:
-
-```bash
-pnpm run dev:website
-```
-
-The first run builds `clui-vue` into `dist/` if needed, then starts the dev server. Production build:
-
-```bash
-pnpm run build:website
-```
-
-Enable **GitHub Actions** as the Pages source in the repo’s **Settings → Pages** to publish the gallery from the `Deploy component gallery` workflow.
-
 ## App setup
 
 Register the plugin (globally registers `Ui*` components) and import built-in styles.
@@ -61,24 +45,6 @@ For a full page base layer (resets, scrollbar, body, theme variables) without ex
 ```
 
 Your Vite (or other) Sass config must be able to resolve `node_modules` (default in Vite).
-
-## `UiRouteProgress`
-
-Pass your router’s busy flag; the bar does not read vue-router by itself.
-
-```vue
-<script setup lang="ts">
-import { isRouteNavigating } from './router/navigation-progress'
-</script>
-
-<template>
-	<UiRouteProgress :active="isRouteNavigating" />
-</template>
-```
-
-## A11y labels without `vue-i18n`
-
-`UiModal`, `UiToastHost`, and `UiInput` expose optional props for close/clear ARIA labels (`closeAriaLabel`, `clearAriaLabel`) so the library does not require `vue-i18n` as a peer by default. Defaults are English.
 
 ## License
 
