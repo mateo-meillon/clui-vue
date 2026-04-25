@@ -1,0 +1,222 @@
+@use 'tokens' as *;
+
+:root,
+[data-theme='light'] {
+	--color-primary: #{$color-primary};
+	--color-primary-hover: #{$color-primary-hover};
+	--color-primary-active: #{$color-primary-active};
+
+	--color-bg: #{$color-gray-100};
+	--color-bg-surface: #{$color-white};
+	--color-text: #{$color-gray-900};
+	--color-text-secondary: #{$color-gray-600};
+	--color-border: #{$color-gray-200};
+
+	--color-btn-secondary-bg: #{$color-gray-100};
+	--color-btn-secondary-bg-hover: #{$color-gray-200};
+	--color-btn-secondary-bg-active: #{$color-gray-300};
+	--color-btn-secondary-text: #{$color-gray-800};
+
+	--color-btn-ghost-text: #{$color-gray-700};
+	--color-btn-ghost-bg-hover: #{$color-gray-100};
+	--color-btn-ghost-bg-active: #{$color-gray-200};
+
+	--color-btn-danger-text: #ff0000;
+	--color-btn-danger-bg: #ffe2e2;
+	--color-btn-danger-bg-hover: #ffc9c9;
+	--color-btn-danger-bg-active: #ffb2b2;
+
+	--color-input-bg: #{$color-white};
+	--color-input-border: #{$color-gray-200};
+	--color-input-border-focus: var(--color-primary);
+	--color-input-text: #{$color-gray-900};
+	--color-input-placeholder: #{$color-gray-400};
+
+	--color-scrollbar-thumb: #{$color-gray-300};
+	--color-scrollbar-thumb-hover: #{$color-gray-400};
+	--color-scrollbar-track: transparent;
+
+	--color-overlay: rgba(0, 0, 0, 0.4);
+	--color-shadow: rgba(0, 0, 0, 0.1);
+
+	--color-skeleton-base: #{$color-gray-200};
+	--color-skeleton-glare: rgba(255, 255, 255, 0.55);
+}
+
+[data-theme='light-soft'] {
+	--color-primary: #2563eb;
+	--color-primary-hover: #1d4ed8;
+	--color-primary-active: #1e40af;
+	--color-bg: #{$color-gray-50};
+	--color-bg-surface: #{$color-white};
+	--color-text: #{$color-gray-800};
+	--color-text-secondary: #{$color-gray-600};
+	--color-border: #{$color-gray-200};
+}
+
+[data-theme='light-contrast'] {
+	--color-primary: #1d4ed8;
+	--color-primary-hover: #1e40af;
+	--color-primary-active: #172554;
+	--color-bg: #{$color-white};
+	--color-bg-surface: #{$color-white};
+	--color-text: #{$color-black};
+	--color-text-secondary: #{$color-gray-700};
+	--color-border: #{$color-gray-300};
+}
+
+[data-theme='light-teal'] {
+	--color-primary: #0f766e;
+	--color-primary-hover: #115e59;
+	--color-primary-active: #134e4a;
+	--color-bg: #{$color-gray-100};
+	--color-bg-surface: #{$color-white};
+	--color-text: #{$color-gray-900};
+	--color-text-secondary: #{$color-gray-600};
+	--color-border: #{$color-gray-200};
+}
+
+[data-theme='dark'] {
+	--color-primary: #3b82f6;
+	--color-primary-hover: #60a5fa;
+	--color-primary-active: #2563eb;
+
+	--color-bg: #0a0a0a;
+	--color-bg-surface: #{$color-gray-900};
+	--color-text: #{$color-gray-50};
+	--color-text-secondary: #{$color-gray-400};
+	--color-border: #{$color-gray-800};
+
+	--color-btn-secondary-bg: #{$color-gray-800};
+	--color-btn-secondary-bg-hover: #{$color-gray-700};
+	--color-btn-secondary-bg-active: #{$color-gray-600};
+	--color-btn-secondary-text: #{$color-gray-50};
+
+	--color-btn-ghost-text: #{$color-gray-300};
+	--color-btn-ghost-bg-hover: #{$color-gray-800};
+	--color-btn-ghost-bg-active: #{$color-gray-700};
+
+	--color-btn-danger-text: #ff0000;
+	--color-btn-danger-bg: #440000;
+	--color-btn-danger-bg-hover: #330000;
+	--color-btn-danger-bg-active: #220000;
+
+	--color-input-bg: #{$color-gray-800};
+	--color-input-border: #{$color-gray-700};
+	--color-input-border-focus: var(--color-primary);
+	--color-input-text: #{$color-gray-50};
+	--color-input-placeholder: #{$color-gray-500};
+
+	--color-scrollbar-thumb: #{$color-gray-700};
+	--color-scrollbar-thumb-hover: #{$color-gray-600};
+	--color-scrollbar-track: transparent;
+
+	--color-overlay: rgba(0, 0, 0, 0.6);
+	--color-shadow: rgba(0, 0, 0, 0.4);
+
+	--color-skeleton-base: #{$color-gray-800};
+	--color-skeleton-glare: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark-soft'] {
+	--color-primary: #60a5fa;
+	--color-primary-hover: #93c5fd;
+	--color-primary-active: #3b82f6;
+	--color-bg: #0f172a;
+	--color-bg-surface: #111827;
+	--color-text: #f8fafc;
+	--color-text-secondary: #94a3b8;
+	--color-border: #1f2937;
+
+	--color-btn-secondary-bg: #1f2937;
+	--color-btn-secondary-bg-hover: #334155;
+	--color-btn-secondary-bg-active: #475569;
+	--color-btn-secondary-text: #f8fafc;
+
+	--color-btn-ghost-text: #cbd5e1;
+	--color-btn-ghost-bg-hover: #1f2937;
+	--color-btn-ghost-bg-active: #334155;
+
+	--color-input-bg: #1f2937;
+	--color-input-border: #334155;
+	--color-input-text: #f8fafc;
+	--color-input-placeholder: #64748b;
+
+	--color-scrollbar-thumb: #334155;
+	--color-scrollbar-thumb-hover: #475569;
+	--color-shadow: rgba(0, 0, 0, 0.35);
+	--color-skeleton-base: #1f2937;
+	--color-skeleton-glare: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark-contrast'] {
+	--color-primary: #93c5fd;
+	--color-primary-hover: #bfdbfe;
+	--color-primary-active: #60a5fa;
+	--color-bg: #000000;
+	--color-bg-surface: #0a0a0a;
+	--color-text: #ffffff;
+	--color-text-secondary: #d4d4d4;
+	--color-border: #262626;
+
+	--color-btn-secondary-bg: #171717;
+	--color-btn-secondary-bg-hover: #262626;
+	--color-btn-secondary-bg-active: #404040;
+	--color-btn-secondary-text: #ffffff;
+
+	--color-btn-ghost-text: #e5e5e5;
+	--color-btn-ghost-bg-hover: #171717;
+	--color-btn-ghost-bg-active: #262626;
+
+	--color-input-bg: #171717;
+	--color-input-border: #262626;
+	--color-input-text: #ffffff;
+	--color-input-placeholder: #a3a3a3;
+
+	--color-scrollbar-thumb: #262626;
+	--color-scrollbar-thumb-hover: #404040;
+	--color-shadow: rgba(0, 0, 0, 0.5);
+	--color-skeleton-base: #171717;
+	--color-skeleton-glare: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark-teal'] {
+	--color-primary: #2dd4bf;
+	--color-primary-hover: #5eead4;
+	--color-primary-active: #14b8a6;
+	--color-bg: #0a0a0a;
+	--color-bg-surface: #{$color-gray-900};
+	--color-text: #{$color-gray-50};
+	--color-text-secondary: #{$color-gray-400};
+	--color-border: #{$color-gray-800};
+
+	--color-btn-secondary-bg: #{$color-gray-800};
+	--color-btn-secondary-bg-hover: #{$color-gray-700};
+	--color-btn-secondary-bg-active: #{$color-gray-600};
+	--color-btn-secondary-text: #{$color-gray-50};
+
+	--color-btn-ghost-text: #{$color-gray-300};
+	--color-btn-ghost-bg-hover: #{$color-gray-800};
+	--color-btn-ghost-bg-active: #{$color-gray-700};
+
+	--color-btn-danger-text: #ff0000;
+	--color-btn-danger-bg: #440000;
+	--color-btn-danger-bg-hover: #330000;
+	--color-btn-danger-bg-active: #220000;
+
+	--color-input-bg: #{$color-gray-800};
+	--color-input-border: #{$color-gray-700};
+	--color-input-border-focus: var(--color-primary);
+	--color-input-text: #{$color-gray-50};
+	--color-input-placeholder: #{$color-gray-500};
+
+	--color-scrollbar-thumb: #{$color-gray-700};
+	--color-scrollbar-thumb-hover: #{$color-gray-600};
+	--color-scrollbar-track: transparent;
+
+	--color-overlay: rgba(0, 0, 0, 0.6);
+	--color-shadow: rgba(0, 0, 0, 0.4);
+
+	--color-skeleton-base: #{$color-gray-800};
+	--color-skeleton-glare: rgba(255, 255, 255, 0.06);
+}
