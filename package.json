@@ -52,5 +52,14 @@
 		"design-system"
 	],
 	"license": "MIT",
-	"packageManager": "pnpm@10.33.2"
+	"packageManager": "pnpm@10.33.2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mateo-meillon/clui-vue.git"
+	},
+	"homepage": "https://mateo-meillon.github.io/clui-vue/",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
 }
