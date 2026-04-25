@@ -78,11 +78,9 @@ jobs:
                   VER=$(node -p "require('./package.json').version")
                   gh release create "v$VER" --title "v$VER" --generate-notes
 
-            # OIDC is implemented in the npm CLI. Use `npm publish` (not pnpm) so the upgraded npm is used.
-            - name: Upgrade npm for OIDC publish
-              run: npm install -g npm@^11.5.1
-
+            # Trusted publishing needs npm ≥11.5 (OIDC). Avoid `npm i -g npm` on the runner — it can leave a
+            # broken global npm (e.g. MODULE_NOT_FOUND / promise-retry). `npx npm@11` runs a clean npm 11.x.
             - name: Publish to npm
-              run: npm publish --access public
+              run: npx --yes npm@11 publish --access public
               env:
                   NPM_CONFIG_PROVENANCE: 'true'
