@@ -1,0 +1,24 @@
+{
+	"name": "clui-website",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"predev": "node ./scripts/ensure-lib.mjs",
+		"dev": "vite",
+		"build": "vue-tsc --noEmit -p tsconfig.app.json && vite build",
+		"preview": "vite preview",
+		"typecheck": "vue-tsc --noEmit -p tsconfig.app.json"
+	},
+	"dependencies": {
+		"clui-vue": "workspace:*",
+		"v-wave": "^3.0.4",
+		"vue": "^3.5.25"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^6.0.2",
+		"sass-embedded": "^1.99.0",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.6",
+		"vue-tsc": "^3.1.6"
+	}
+}

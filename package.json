@@ -40,7 +40,10 @@
 	},
 	"scripts": {
 		"build": "vue-tsc --noEmit -p tsconfig.json && vite build",
-		"typecheck": "vue-tsc --noEmit -p tsconfig.json"
+		"typecheck": "vue-tsc --noEmit -p tsconfig.json",
+		"dev:website": "pnpm --dir website dev",
+		"build:website": "pnpm run build && pnpm --dir website build",
+		"typecheck:website": "pnpm --dir website run typecheck"
 	},
 	"keywords": [
 		"vue",

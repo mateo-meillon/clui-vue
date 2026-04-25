@@ -11,6 +11,22 @@ pnpm add clui-vue
 
 Peer dependency: `vue` ^3.5.
 
+## Component gallery (this repo)
+
+The `website/` package is a static Vite app that showcases every `Ui*` component. From the repository root:
+
+```bash
+pnpm run dev:website
+```
+
+The first run builds `clui-vue` into `dist/` if needed, then starts the dev server. Production build:
+
+```bash
+pnpm run build:website
+```
+
+Enable **GitHub Actions** as the Pages source in the repo’s **Settings → Pages** to publish the gallery from the `Deploy component gallery` workflow.
+
 ## App setup
 
 Register the plugin (globally registers `Ui*` components) and import built-in styles.
