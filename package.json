@@ -40,7 +40,8 @@
 	},
 	"scripts": {
 		"build": "vue-tsc --noEmit -p tsconfig.json && vite build",
-		"typecheck": "vue-tsc --noEmit -p tsconfig.json"
+		"typecheck": "vue-tsc --noEmit -p tsconfig.json",
+		"publish:npm": "node scripts/publish-with-env.cjs"
 	},
 	"keywords": [
 		"vue",

@@ -56,7 +56,7 @@ import { isRouteNavigating } from './router/navigation-progress'
 </script>
 
 <template>
-  <UiRouteProgress :active="isRouteNavigating" />
+	<UiRouteProgress :active="isRouteNavigating" />
 </template>
 ```
 
