@@ -1,5 +1,9 @@
 {
 	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"clui-vue": ["../src/index.ts"]
+		},
 		"target": "ES2022",
 		"module": "ESNext",
 		"lib": ["ES2022", "DOM", "DOM.Iterable"],
