@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue'
 import { type SelectOption, type Theme, isDarkTheme, toastDanger, toastSuccess, toastWarning, useTheme } from 'clui-vue'
+import GalleryNav from './components/GalleryNav.vue'
 
 const { theme, toggleTheme } = useTheme()
 
@@ -56,9 +57,12 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 
 		<div class="gallery">
 			<header class="gallery__bar">
-				<div class="gallery__brand">
-					<span class="gallery__title">clui-vue</span>
-					<span class="gallery__subtitle">Component gallery</span>
+				<div class="gallery__bar-start">
+					<div id="gallery-nav-toggle-host" class="gallery-nav-toggle-host" />
+					<div class="gallery__brand">
+						<span class="gallery__title">clui-vue</span>
+						<span class="gallery__subtitle">Component gallery</span>
+					</div>
 				</div>
 				<div class="gallery__bar-actions">
 					<UiFormField class="gallery__field" label="Theme">
@@ -69,19 +73,7 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 			</header>
 
 			<div class="gallery__frame">
-				<nav class="gallery__nav" aria-label="On this page">
-					<a href="#buttons">Button</a>
-					<a href="#inputs">Input</a>
-					<a href="#form">Form field &amp; select</a>
-					<a href="#card">Card</a>
-					<a href="#radio">Radio</a>
-					<a href="#dropdown">Dropdown</a>
-					<a href="#modal">Modal</a>
-					<a href="#skeleton">Skeleton</a>
-					<a href="#toast">Toast</a>
-					<a href="#route-progress">Route progress</a>
-					<a href="#icon">Icon</a>
-				</nav>
+				<GalleryNav />
 
 				<main class="gallery__main">
 					<section id="buttons" class="block">
@@ -293,10 +285,22 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 	z-index: 10;
 }
 
+.gallery__bar-start {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	min-width: 0;
+}
+
+.gallery-nav-toggle-host {
+	display: contents;
+}
+
 .gallery__brand {
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
+	min-width: 0;
 }
 
 .gallery__title {
@@ -325,34 +329,6 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 	display: flex;
 	flex: 1;
 	min-height: 0;
-}
-
-.gallery__nav {
-	width: 13rem;
-	flex-shrink: 0;
-	min-height: 0;
-	padding: $space-5 $space-4;
-	border-right: 1px solid var(--color-border);
-	display: flex;
-	flex-direction: column;
-	gap: $space-1;
-	background: var(--color-bg-elevated);
-	/* In rare cases the link list is taller than the viewport; this column scrolls independently. */
-	overflow-y: auto;
-	box-sizing: border-box;
-
-	a {
-		font-size: $text-sm;
-		color: var(--color-text-secondary);
-		text-decoration: none;
-		padding: $space-1 $space-2;
-		border-radius: $radius-sm;
-
-		&:hover {
-			color: var(--color-text);
-			background: var(--color-btn-ghost-bg-hover);
-		}
-	}
 }
 
 .gallery__main {
@@ -463,17 +439,8 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 
 @media (max-width: 720px) {
 	.gallery__frame {
-		flex-direction: column;
 		flex: 1;
 		min-height: 0;
-	}
-
-	.gallery__nav {
-		width: 100%;
-		flex-direction: row;
-		flex-wrap: wrap;
-		border-right: none;
-		border-bottom: 1px solid var(--color-border);
 	}
 
 	.gallery__main {
