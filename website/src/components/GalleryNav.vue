@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 
-const TOGGLE_HOST_ID = 'gallery-nav-toggle-host'
+const navOpen = defineModel<boolean>('open', { default: false })
 
 const navLinks = [
 	{ href: '#buttons', label: 'Button' },
@@ -16,8 +16,6 @@ const navLinks = [
 	{ href: '#route-progress', label: 'Route progress' },
 	{ href: '#icon', label: 'Icon' },
 ] as const
-
-const navOpen = ref(false)
 
 function closeNav(): void {
 	navOpen.value = false
@@ -47,18 +45,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<Teleport :to="`#${TOGGLE_HOST_ID}`">
-		<UiButton
-			class="gallery-nav__toggle"
-			variant="ghost"
-			icon="menu"
-			aria-label="Open page navigation"
-			:aria-expanded="navOpen"
-			aria-controls="gallery-nav-drawer"
-			@click="navOpen = true"
-		/>
-	</Teleport>
-
 	<nav class="gallery-nav gallery-nav--desktop" aria-label="On this page">
 		<a v-for="link in navLinks" :key="link.href" :href="link.href">{{ link.label }}</a>
 	</nav>
@@ -90,11 +76,6 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 @use 'clui-vue/tokens' as *;
-
-.gallery-nav__toggle {
-	display: none;
-	flex-shrink: 0;
-}
 
 .gallery-nav {
 	flex-shrink: 0;
@@ -197,10 +178,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 720px) {
-	.gallery-nav__toggle {
-		display: inline-flex;
-	}
-
 	.gallery-nav--desktop {
 		display: none;
 	}

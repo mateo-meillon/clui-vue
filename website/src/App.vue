@@ -48,6 +48,8 @@ const radio = ref('one')
 const radioChoices = ['one', 'two', 'three'] as const
 
 const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle', 'error'] as const
+
+const galleryNavOpen = ref(false)
 </script>
 
 <template>
@@ -58,7 +60,16 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 		<div class="gallery">
 			<header class="gallery__bar">
 				<div class="gallery__bar-start">
-					<div id="gallery-nav-toggle-host" class="gallery-nav-toggle-host" />
+					<span class="gallery__menu-trigger">
+						<UiButton
+							variant="ghost"
+							icon="menu"
+							aria-label="Open page navigation"
+							:aria-expanded="galleryNavOpen"
+							aria-controls="gallery-nav-drawer"
+							@click="galleryNavOpen = true"
+						/>
+					</span>
 					<div class="gallery__brand">
 						<span class="gallery__title">clui-vue</span>
 						<span class="gallery__subtitle">Component gallery</span>
@@ -73,7 +84,7 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 			</header>
 
 			<div class="gallery__frame">
-				<GalleryNav />
+				<GalleryNav v-model:open="galleryNavOpen" />
 
 				<main class="gallery__main">
 					<section id="buttons" class="block">
@@ -292,8 +303,10 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 	min-width: 0;
 }
 
-.gallery-nav-toggle-host {
-	display: contents;
+.gallery__menu-trigger {
+	display: none;
+	flex-shrink: 0;
+	line-height: 0;
 }
 
 .gallery__brand {
@@ -438,6 +451,11 @@ const iconNames = ['search', 'settings', 'darkMode', 'lightMode', 'checkCircle',
 }
 
 @media (max-width: 720px) {
+	.gallery__menu-trigger {
+		display: inline-flex;
+		align-items: center;
+	}
+
 	.gallery__frame {
 		flex: 1;
 		min-height: 0;
