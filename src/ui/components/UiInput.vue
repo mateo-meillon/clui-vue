@@ -71,8 +71,9 @@ function onClear(): void {
 	transition:
 		border-color $duration-fast $easing-default,
 		box-shadow $duration-fast $easing-default;
+	box-shadow: 0 0 0 0 transparent;
 
-	&:focus {
+	&:focus-within {
 		border-color: var(--color-input-border-focus);
 		box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 	}
