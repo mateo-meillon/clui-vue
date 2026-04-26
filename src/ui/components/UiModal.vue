@@ -82,15 +82,16 @@ function onKeydown(e: KeyboardEvent): void {
 	flex-direction: column;
 	max-height: calc(100vh - 64px);
 	overflow: hidden;
+	width: calc(100vw - 32px);
 
 	&--sm {
-		width: 380px;
+		max-width: 380px;
 	}
 	&--md {
-		width: 520px;
+		max-width: 520px;
 	}
 	&--lg {
-		width: 720px;
+		max-width: 720px;
 	}
 
 	&__header {
