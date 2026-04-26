@@ -29,6 +29,9 @@ const open = ref(false)
 const root = ref<HTMLElement | null>(null)
 const listboxId = useId()
 
+/** Block ghost `click` on trigger right after option pick (panel gone, same coords; esp. mobile). */
+const ignoreTriggerToggleUntil = ref(0)
+
 let docClickHandler: ((e: MouseEvent) => void) | null = null
 
 function removeDocClick(): void {
@@ -44,6 +47,7 @@ function close(): void {
 
 function toggle(): void {
 	if (props.disabled) return
+	if (Date.now() < ignoreTriggerToggleUntil.value) return
 	open.value = !open.value
 }
 
@@ -52,6 +56,7 @@ function onEscape(e: KeyboardEvent): void {
 }
 
 function selectValue(value: string): void {
+	ignoreTriggerToggleUntil.value = Date.now() + 10
 	close()
 	emit('update:modelValue', value)
 }
@@ -121,16 +126,7 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 		</button>
 		<Transition name="ui-select-panel">
 			<div v-if="open" :id="listboxId" class="ui-select__panel" role="listbox" aria-orientation="vertical">
-				<div
-					v-for="opt in options"
-					:key="opt.value"
-					role="option"
-					class="ui-select__option"
-					:aria-selected="modelValue === opt.value"
-					@pointerdown.prevent.stop="selectValue(opt.value)"
-					@mousedown.prevent.stop="selectValue(opt.value)"
-					@click.prevent.stop
-				>
+				<div v-for="opt in options" :key="opt.value" role="option" class="ui-select__option" :aria-selected="modelValue === opt.value" @click.stop="selectValue(opt.value)">
 					{{ opt.label }}
 				</div>
 			</div>
@@ -220,6 +216,10 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 	gap: $space-1;
 	max-height: min(16rem, 50vh);
 	overflow-y: auto;
+	// Let touch scrolling win over option activation; click selects after a real tap.
+	touch-action: pan-y;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
 }
 
 .ui-select__option {
