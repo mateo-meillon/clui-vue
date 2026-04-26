@@ -1,4 +1,3 @@
-import 'clui-vue/style.css'
 import 'clui-vue/styles/base'
 
 import { createApp } from 'vue'
