@@ -1,9 +1,3 @@
-# Run from Actions → Release and publish to npm → Run workflow
-# (choose patch / minor / major). Pushes version commit + tag, publishes to npm, opens a GitHub Release.
-#
-# Publishing uses npm Trusted Publishing (OIDC). Configure the package on npmjs.com with this exact
-# workflow file name and GitHub org/repo. No NPM_TOKEN secret.
-# If you set an "Environment" on the trusted publisher in npm, add the same to the job: environment: <name>
 name: Release and publish to npm
 
 on:
@@ -43,9 +37,8 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: '22.14'
+                  node-version: '24.x'
                   cache: pnpm
-                  registry-url: 'https://registry.npmjs.org'
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -79,8 +72,6 @@ jobs:
                   VER=$(node -p "require('./package.json').version")
                   gh release create "v$VER" --title "v$VER" --generate-notes
 
-            # Trusted publishing needs npm ≥11.5 (OIDC). Avoid `npm i -g npm` on the runner — it can leave a
-            # broken global npm (e.g. MODULE_NOT_FOUND / promise-retry). `npx npm@11` runs a clean npm 11.x.
             - name: Publish to npm
               run: npx --yes "npm@^11.5.1" publish --access public
               env:
