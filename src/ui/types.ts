@@ -6,3 +6,8 @@ export interface SelectOption {
 	label: string
 	value: string
 }
+
+export interface UiTabItem {
+	id: string
+	label: string
+}
