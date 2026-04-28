@@ -12,6 +12,7 @@ import {
 	UiSelect,
 	UiSkeleton,
 	UiToastHost,
+	UiTable,
 } from './components'
 
 export * from './components'
@@ -33,6 +34,7 @@ const components = {
 	UiSelect,
 	UiSkeleton,
 	UiToastHost,
+	UiTable,
 } as Record<string, ReturnType<typeof import('vue').defineComponent>>
 
 export default {
