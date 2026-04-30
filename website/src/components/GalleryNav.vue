@@ -1,27 +1,45 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import type { UiTreeNode } from 'clui-vue'
+import { COMPONENTS_ROOT_ID, buildGalleryNavTree } from '../nav-tree'
 
 const navOpen = defineModel<boolean>('open', { default: false })
 
-const navLinks = [
-	{ href: '#buttons', label: 'Button' },
-	{ href: '#inputs', label: 'Input' },
-	{ href: '#form', label: 'Form field & select' },
-	{ href: '#card', label: 'Card' },
-	{ href: '#radio', label: 'Radio' },
-	{ href: '#dropdown', label: 'Dropdown' },
-	{ href: '#modal', label: 'Modal' },
-	{ href: '#skeleton', label: 'Skeleton' },
-	{ href: '#toast', label: 'Toast' },
-	{ href: '#route-progress', label: 'Route progress' },
-	{ href: '#icon', label: 'Icon' },
-] as const
+const route = useRoute()
+const router = useRouter()
+
+const navNodes = buildGalleryNavTree()
+
+const expandedKeys = ref<string[]>([COMPONENTS_ROOT_ID])
+
+watch(
+	() => [route.name, route.params.slug] as const,
+	() => {
+		const next = new Set(expandedKeys.value)
+		if (route.name === 'playground') {
+			next.add(COMPONENTS_ROOT_ID)
+		}
+		expandedKeys.value = [...next]
+	},
+	{ immediate: true },
+)
+
+const activeId = computed(() => {
+	if (route.name === 'getting-started') return 'getting-started'
+	if (route.name === 'overview') return 'overview'
+	if (route.name === 'playground') return `pg-${String(route.params.slug ?? '')}`
+	return null
+})
 
 function closeNav(): void {
 	navOpen.value = false
 }
 
-function onNavLinkClick(): void {
+function onActivate(node: UiTreeNode): void {
+	if (node.id === 'getting-started') void router.push({ name: 'getting-started' })
+	else if (node.id === 'overview') void router.push({ name: 'overview' })
+	else if (node.id.startsWith('pg-')) void router.push({ name: 'playground', params: { slug: node.id.slice(3) } })
 	closeNav()
 }
 
@@ -45,31 +63,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<nav class="gallery-nav gallery-nav--desktop" aria-label="On this page">
-		<a v-for="link in navLinks" :key="link.href" :href="link.href">{{ link.label }}</a>
-	</nav>
+	<div class="nav desktop" aria-label="Documentation">
+		<UiTree v-model:expanded-keys="expandedKeys" :nodes="navNodes" :active-id="activeId" @activate="onActivate" />
+	</div>
 
-	<div
-		class="gallery-nav__drawer"
-		:class="{ 'gallery-nav__drawer--open': navOpen }"
-		:aria-hidden="navOpen ? 'false' : 'true'"
-	>
-		<div class="gallery-nav__drawer-backdrop" aria-hidden="true" @click="closeNav" />
-		<div
-			id="gallery-nav-drawer"
-			class="gallery-nav__drawer-panel"
-			role="dialog"
-			aria-modal="true"
-			aria-label="On this page"
-			@click.stop
-		>
-			<div class="gallery-nav__drawer-head">
-				<span class="gallery-nav__drawer-title">On this page</span>
+	<div class="drawer" :class="{ open: navOpen }" :aria-hidden="navOpen ? 'false' : 'true'">
+		<div class="backdrop" aria-hidden="true" @click="closeNav" />
+		<div id="gallery-nav-drawer" class="panel" role="dialog" aria-modal="true" aria-label="Documentation" @click.stop>
+			<div class="head">
+				<span class="menu-title">Menu</span>
 				<UiButton variant="ghost" icon="close" aria-label="Close navigation" @click="closeNav" />
 			</div>
-			<nav class="gallery-nav gallery-nav--drawer" aria-label="On this page">
-				<a v-for="link in navLinks" :key="link.href" :href="link.href" @click="onNavLinkClick">{{ link.label }}</a>
-			</nav>
+			<div class="tree">
+				<UiTree v-model:expanded-keys="expandedKeys" :nodes="navNodes" :active-id="activeId" @activate="onActivate" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -77,44 +84,22 @@ onUnmounted(() => {
 <style scoped lang="scss">
 @use 'clui-vue/tokens' as *;
 
-.gallery-nav {
+.nav {
 	flex-shrink: 0;
 	min-height: 0;
-	display: flex;
-	flex-direction: column;
-	gap: $space-1;
 	box-sizing: border-box;
 
-	a {
-		font-size: $text-sm;
-		color: var(--color-text-secondary);
-		text-decoration: none;
-		padding: $space-1 $space-2;
-		border-radius: $radius-sm;
-
-		&:hover {
-			color: var(--color-text);
-			background: var(--color-btn-ghost-bg-hover);
-		}
+	&.desktop {
+		width: 18rem;
+		padding: $space-5 $space-3 $space-5 $space-2;
+		border-right: 1px solid var(--color-border);
+		background: var(--color-bg-surface);
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 }
 
-.gallery-nav--desktop {
-	width: 13rem;
-	padding: $space-5 $space-4;
-	border-right: 1px solid var(--color-border);
-	background: var(--color-bg-surface);
-	overflow-y: auto;
-}
-
-.gallery-nav--drawer {
-	flex: 1;
-	min-height: 0;
-	padding: 0 $space-4 $space-5;
-	overflow-y: auto;
-}
-
-.gallery-nav__drawer {
+.drawer {
 	position: fixed;
 	inset: 0;
 	z-index: 100;
@@ -122,63 +107,71 @@ onUnmounted(() => {
 	visibility: hidden;
 	transition: visibility 0.2s;
 
-	&--open {
+	&.open {
 		pointer-events: auto;
 		visibility: visible;
+
+		.backdrop {
+			opacity: 1;
+		}
+
+		.panel {
+			transform: translateX(0);
+		}
+	}
+
+	.backdrop {
+		position: absolute;
+		inset: 0;
+		background: color-mix(in srgb, var(--color-text) 35%, transparent);
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+
+	.panel {
+		position: absolute;
+		z-index: 1;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: min(18rem, 88vw);
+		max-width: 100%;
+		display: flex;
+		flex-direction: column;
+		background: var(--color-bg-surface);
+		border-right: 1px solid var(--color-border);
+		box-shadow: 4px 0 24px color-mix(in srgb, var(--color-text) 12%, transparent);
+		transform: translateX(-100%);
+		transition: transform 0.2s ease;
+	}
+
+	.head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: $space-3;
+		padding: $space-4 $space-4 $space-3;
+		border-bottom: 1px solid var(--color-border);
+		flex-shrink: 0;
+
+		.menu-title {
+			font-size: $text-sm;
+			font-weight: 600;
+			color: var(--color-text);
+		}
+	}
+
+	.tree {
+		flex: 1;
+		min-height: 0;
+		padding: 0 $space-2 $space-5 $space-2;
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 }
 
-.gallery-nav__drawer-backdrop {
-	position: absolute;
-	inset: 0;
-	background: color-mix(in srgb, var(--color-text) 35%, transparent);
-	opacity: 0;
-	transition: opacity 0.2s ease;
-}
-
-.gallery-nav__drawer--open .gallery-nav__drawer-backdrop {
-	opacity: 1;
-}
-
-.gallery-nav__drawer-panel {
-	position: absolute;
-	z-index: 1;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	width: min(16rem, 88vw);
-	max-width: 100%;
-	display: flex;
-	flex-direction: column;
-	background: var(--color-bg-surface);
-	border-right: 1px solid var(--color-border);
-	box-shadow: 4px 0 24px color-mix(in srgb, var(--color-text) 12%, transparent);
-	transform: translateX(-100%);
-	transition: transform 0.2s ease;
-}
-
-.gallery-nav__drawer--open .gallery-nav__drawer-panel {
-	transform: translateX(0);
-}
-
-.gallery-nav__drawer-head {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: $space-3;
-	padding: $space-4 $space-4 $space-3;
-	border-bottom: 1px solid var(--color-border);
-	flex-shrink: 0;
-}
-
-.gallery-nav__drawer-title {
-	font-size: $text-sm;
-	font-weight: 600;
-	color: var(--color-text);
-}
-
 @media (max-width: 720px) {
-	.gallery-nav--desktop {
+	.nav.desktop {
 		display: none;
 	}
 }

@@ -7,7 +7,7 @@ withDefaults(
 		align?: 'start' | 'end'
 	}>(),
 	{
-		align: 'end',
+		align: 'start',
 	},
 )
 
@@ -106,7 +106,8 @@ onUnmounted(() => {
 	}
 }
 
-:deep(.ui-dropdown__item) {
+:deep(.ui-dropdown__item),
+:deep(.ui-dropdown-item) {
 	display: flex;
 	width: 100%;
 	align-items: center;
