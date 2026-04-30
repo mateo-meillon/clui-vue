@@ -1,0 +1,19 @@
+@use 'clui-vue/tokens' as *;
+
+$playground-demo-max-width: 22rem;
+$preview-input-max-width: 10rem;
+$preview-form-field-max-width: 11rem;
+$preview-cluster-max-width: 12rem;
+
+@mixin playground-checkbox-row {
+	display: flex;
+	align-items: center;
+	gap: $space-2;
+	font-size: $text-sm;
+	color: var(--color-text-secondary);
+	cursor: pointer;
+
+	input {
+		accent-color: var(--color-primary);
+	}
+}
