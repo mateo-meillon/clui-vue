@@ -10,7 +10,7 @@ const cluiRoot = resolve(__dirname, '..')
 // Use library source and SFC styles instead of the published `dist` build.
 export default defineConfig({
 	plugins: [vue()],
-	base: './',
+	base: '/clui-vue/',
 	resolve: {
 		alias: [
 			// Only the package root — not `clui-vue/styles/...` or `clui-vue/tokens`.
