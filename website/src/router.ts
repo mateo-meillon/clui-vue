@@ -1,8 +1,8 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import GalleryShell from './layout/GalleryShell.vue'
 
 export default createRouter({
-	history: createWebHistory(),
+	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
 			path: '/',
