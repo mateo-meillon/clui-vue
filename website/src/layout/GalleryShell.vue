@@ -87,10 +87,6 @@ function onMainScroll(ev: Event): void {
 	else headerHidden.value = false
 }
 
-const galleryStyle = computed(() => ({
-	paddingTop: `${headerHeightPx.value}px`,
-}))
-
 watch(
 	() => route.fullPath,
 	async () => {
@@ -123,7 +119,7 @@ onUnmounted(() => {
 		<UiToastHost />
 		<UiRouteProgress :active="routeProgressActive" />
 
-		<div class="gallery" :style="galleryStyle">
+		<div class="gallery">
 			<header ref="barEl" class="bar" :class="{ 'bar--hidden': headerHidden }" :aria-hidden="headerHidden">
 				<div class="start">
 					<span class="menu">
@@ -158,7 +154,7 @@ onUnmounted(() => {
 			<div class="frame">
 				<GalleryNav v-model:open="galleryNavOpen" />
 
-				<main ref="mainEl" class="main" @scroll.passive="onMainScroll">
+				<main ref="mainEl" class="main" @scroll.passive="onMainScroll" :style="{ paddingTop: `${headerHeightPx + 24}px` }">
 					<RouterView />
 				</main>
 			</div>
@@ -188,6 +184,7 @@ onUnmounted(() => {
 	color: var(--color-text);
 	box-sizing: border-box;
 
+	/* Viewport-fixed chrome; translateY when .bar--hidden (scroll handled in script). */
 	.bar {
 		display: flex;
 		align-items: center;
@@ -205,15 +202,11 @@ onUnmounted(() => {
 		left: 0;
 		right: 0;
 		z-index: 25;
-		transition: transform $duration-slow $easing-default;
+		transition: transform $duration-normal $easing-default;
 
 		&.bar--hidden {
 			transform: translateY(-100%);
 			pointer-events: none;
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			transition: none;
 		}
 
 		.start {
@@ -291,7 +284,6 @@ onUnmounted(() => {
 			min-height: 0;
 			overflow-y: auto;
 			scroll-behavior: smooth;
-			padding-top: $space-6;
 			padding-inline: calc(#{$space-6} + env(safe-area-inset-left, 0px)) calc(#{$space-6} + env(safe-area-inset-right, 0px));
 			padding-bottom: calc(#{$space-8} + env(safe-area-inset-bottom, 0px));
 		}
@@ -337,15 +329,11 @@ onUnmounted(() => {
 		min-width: 0;
 		max-width: 100%;
 	}
+}
 
-	.gallery .frame {
-		flex: 1;
-		min-height: 0;
-	}
-
-	.gallery .frame .main {
-		flex: 1;
-		min-height: 0;
+@media (prefers-reduced-motion: reduce) {
+	.gallery .bar {
+		transition: none;
 	}
 }
 </style>

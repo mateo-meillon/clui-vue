@@ -165,7 +165,7 @@ onUnmounted(() => {
 	.tree {
 		flex: 1;
 		min-height: 0;
-		padding: 0 $space-2 calc(#{$space-5} + env(safe-area-inset-bottom, 0px)) $space-2;
+		padding: $space-2 $space-2 calc(#{$space-5} + env(safe-area-inset-bottom, 0px)) $space-2;
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
