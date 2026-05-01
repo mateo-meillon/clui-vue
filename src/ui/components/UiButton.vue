@@ -14,6 +14,9 @@ const props = withDefaults(
 		align?: 'start' | 'center' | 'end'
 		active?: boolean
 		loading?: boolean
+		href?: string
+		target?: string
+		rel?: string
 	}>(),
 	{
 		variant: 'secondary',
@@ -25,6 +28,9 @@ const props = withDefaults(
 		align: 'center',
 		active: false,
 		loading: false,
+		href: undefined,
+		target: undefined,
+		rel: undefined,
 	},
 )
 
@@ -34,10 +40,20 @@ defineEmits<{
 
 const slots = useSlots()
 const iconOnly = computed(() => !!props.icon && !slots.default)
+
+const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
+
+const anchorRel = computed(() => {
+	if (!useAnchor.value) return undefined
+	if (props.rel !== undefined) return props.rel || undefined
+	if (props.target === '_blank') return 'noopener noreferrer'
+	return undefined
+})
 </script>
 
 <template>
-	<button
+	<component
+		:is="useAnchor ? 'a' : 'button'"
 		v-wave
 		class="ui-button"
 		:class="[
@@ -52,13 +68,16 @@ const iconOnly = computed(() => !!props.icon && !slots.default)
 				'ui-button--active': active,
 			},
 		]"
-		:disabled="disabled || loading"
+		:href="useAnchor ? href : undefined"
+		:target="useAnchor ? target : undefined"
+		:rel="useAnchor ? anchorRel : undefined"
+		:disabled="useAnchor ? undefined : disabled || loading"
 		@click="$emit('click', $event)"
 	>
 		<span v-if="loading" class="ui-button__spinner" />
 		<UiIcon v-else-if="icon" :name="icon" :size="18" />
 		<slot />
-	</button>
+	</component>
 </template>
 
 <style scoped lang="scss">
@@ -74,6 +93,8 @@ const iconOnly = computed(() => !!props.icon && !slots.default)
 	border: none;
 	outline: none;
 	cursor: pointer;
+	text-decoration: none;
+	box-sizing: border-box;
 	transition:
 		background $duration-normal $easing-default,
 		color $duration-normal $easing-default,

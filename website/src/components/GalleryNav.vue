@@ -138,6 +138,7 @@ onUnmounted(() => {
 		max-width: 100%;
 		display: flex;
 		flex-direction: column;
+		padding-left: env(safe-area-inset-left, 0px);
 		background: var(--color-bg-surface);
 		border-right: 1px solid var(--color-border);
 		box-shadow: 4px 0 24px color-mix(in srgb, var(--color-text) 12%, transparent);
@@ -150,7 +151,7 @@ onUnmounted(() => {
 		align-items: center;
 		justify-content: space-between;
 		gap: $space-3;
-		padding: $space-4 $space-4 $space-3;
+		padding: calc(#{$space-4} + env(safe-area-inset-top, 0px)) $space-4 $space-3;
 		border-bottom: 1px solid var(--color-border);
 		flex-shrink: 0;
 
@@ -164,7 +165,7 @@ onUnmounted(() => {
 	.tree {
 		flex: 1;
 		min-height: 0;
-		padding: 0 $space-2 $space-5 $space-2;
+		padding: 0 $space-2 calc(#{$space-5} + env(safe-area-inset-bottom, 0px)) $space-2;
 		overflow-x: hidden;
 		overflow-y: auto;
 	}

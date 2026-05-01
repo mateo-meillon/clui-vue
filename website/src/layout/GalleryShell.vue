@@ -50,6 +50,9 @@ const themeOptions: { label: string; value: Theme }[] = [
 const themeSelectOptions: SelectOption[] = themeOptions.map((o) => ({ label: o.label, value: o.value }))
 
 const galleryNavOpen = ref(false)
+
+const npmPackageUrl = 'https://www.npmjs.com/package/clui-vue'
+const githubRepoUrl = 'https://github.com/mateo-meillon/clui-vue'
 </script>
 
 <template>
@@ -76,10 +79,16 @@ const galleryNavOpen = ref(false)
 					</RouterLink>
 				</div>
 				<div class="actions">
-					<UiFormField class="field" label="Theme">
-						<UiSelect v-model="theme" :options="themeSelectOptions" size="md" />
-					</UiFormField>
-					<UiButton variant="secondary" :icon="isDarkTheme(theme) ? 'lightMode' : 'darkMode'" @click="toggleTheme"> Toggle </UiButton>
+					<div class="external">
+						<UiButton variant="ghost" icon="npm" aria-label="clui-vue on npm" :href="npmPackageUrl" target="_blank" rel="noopener noreferrer" />
+						<UiButton variant="ghost" icon="github" aria-label="clui-vue on GitHub" :href="githubRepoUrl" target="_blank" rel="noopener noreferrer" />
+					</div>
+					<div class="theme-tools">
+						<UiFormField class="field" label="Theme">
+							<UiSelect v-model="theme" :options="themeSelectOptions" size="md" />
+						</UiFormField>
+						<UiButton variant="secondary" :icon="isDarkTheme(theme) ? 'lightMode' : 'darkMode'" @click="toggleTheme"> Toggle </UiButton>
+					</div>
 				</div>
 			</header>
 
@@ -101,9 +110,9 @@ const galleryNavOpen = ref(false)
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
-	height: 100%;
-	min-height: 100dvh;
-	max-height: 100dvh;
+	flex: 1;
+	min-height: 0;
+	width: 100%;
 	overflow: hidden;
 }
 
@@ -121,7 +130,10 @@ const galleryNavOpen = ref(false)
 		justify-content: space-between;
 		gap: $space-4;
 		flex-wrap: wrap;
-		padding: $space-4 $space-5;
+		padding-top: calc(#{$space-4} + env(safe-area-inset-top, 0px));
+		padding-right: calc(#{$space-5} + env(safe-area-inset-right, 0px));
+		padding-bottom: $space-4;
+		padding-left: calc(#{$space-5} + env(safe-area-inset-left, 0px));
 		border-bottom: 1px solid var(--color-border);
 		background: var(--color-bg-surface);
 		position: sticky;
@@ -172,6 +184,20 @@ const galleryNavOpen = ref(false)
 			gap: $space-3;
 			flex-wrap: wrap;
 
+			.theme-tools {
+				display: flex;
+				align-items: flex-end;
+				gap: $space-3;
+				flex-wrap: wrap;
+			}
+
+			.external {
+				display: flex;
+				align-items: center;
+				gap: $space-1;
+				padding-bottom: 2px;
+			}
+
 			.field {
 				min-width: 12rem;
 			}
@@ -189,15 +215,51 @@ const galleryNavOpen = ref(false)
 			min-height: 0;
 			overflow-y: auto;
 			scroll-behavior: smooth;
-			padding: $space-6 $space-6 $space-8;
+			padding-top: $space-6;
+			padding-inline: calc(#{$space-6} + env(safe-area-inset-left, 0px)) calc(#{$space-6} + env(safe-area-inset-right, 0px));
+			padding-bottom: calc(#{$space-8} + env(safe-area-inset-bottom, 0px));
 		}
 	}
 }
 
 @media (max-width: 720px) {
+	.gallery .bar {
+		align-items: center;
+		flex-wrap: wrap;
+		row-gap: $space-3;
+	}
+
 	.gallery .bar .start .menu {
 		display: inline-flex;
 		align-items: center;
+	}
+
+	/* Flatten .actions so .external can sit on the title row; .theme-tools wraps full width below */
+	.gallery .bar .actions {
+		display: contents;
+	}
+
+	.gallery .bar .start {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.gallery .bar .external {
+		flex-shrink: 0;
+		padding-bottom: 0;
+	}
+
+	.gallery .bar .theme-tools {
+		flex: 1 1 100%;
+		width: 100%;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+
+	.gallery .bar .theme-tools .field {
+		flex: 1 1 auto;
+		min-width: 0;
+		max-width: 100%;
 	}
 
 	.gallery .frame {
