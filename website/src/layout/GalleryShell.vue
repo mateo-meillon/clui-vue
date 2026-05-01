@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, provide, ref, watch } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { type SelectOption, type Theme, isDarkTheme, useTheme } from 'clui-vue'
 import GalleryNav from '../components/GalleryNav.vue'
@@ -53,6 +53,69 @@ const galleryNavOpen = ref(false)
 
 const npmPackageUrl = 'https://www.npmjs.com/package/clui-vue'
 const githubRepoUrl = 'https://github.com/mateo-meillon/clui-vue'
+
+const barEl = ref<HTMLElement | null>(null)
+const mainEl = ref<HTMLElement | null>(null)
+const headerHidden = ref(false)
+const headerHeightPx = ref(0)
+const lastScrollTop = ref(0)
+const reduceMotion = ref(false)
+
+let barResizeObserver: ResizeObserver | null = null
+
+function measureBar(): void {
+	const el = barEl.value
+	headerHeightPx.value = el?.offsetHeight ?? 0
+}
+
+function onMainScroll(ev: Event): void {
+	if (reduceMotion.value) return
+	const el = ev.target as HTMLElement
+	const st = Math.max(0, el.scrollTop)
+	const delta = st - lastScrollTop.value
+	lastScrollTop.value = st
+
+	const edgePx = 40
+	const minDelta = 10
+
+	if (st <= edgePx) {
+		headerHidden.value = false
+		return
+	}
+	if (Math.abs(delta) < minDelta) return
+	if (delta > 0) headerHidden.value = true
+	else headerHidden.value = false
+}
+
+const galleryStyle = computed(() => ({
+	paddingTop: headerHidden.value ? '0px' : `${headerHeightPx.value}px`,
+}))
+
+watch(
+	() => route.fullPath,
+	async () => {
+		headerHidden.value = false
+		await nextTick()
+		lastScrollTop.value = mainEl.value?.scrollTop ?? 0
+	},
+)
+
+onMounted(() => {
+	reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+	nextTick(() => {
+		measureBar()
+		const bar = barEl.value
+		if (bar && typeof ResizeObserver !== 'undefined') {
+			barResizeObserver = new ResizeObserver(() => measureBar())
+			barResizeObserver.observe(bar)
+		}
+	})
+})
+
+onUnmounted(() => {
+	barResizeObserver?.disconnect()
+	barResizeObserver = null
+})
 </script>
 
 <template>
@@ -60,8 +123,8 @@ const githubRepoUrl = 'https://github.com/mateo-meillon/clui-vue'
 		<UiToastHost />
 		<UiRouteProgress :active="routeProgressActive" />
 
-		<div class="gallery">
-			<header class="bar">
+		<div class="gallery" :style="galleryStyle">
+			<header ref="barEl" class="bar" :class="{ 'bar--hidden': headerHidden }" :aria-hidden="headerHidden">
 				<div class="start">
 					<span class="menu">
 						<UiButton
@@ -95,7 +158,7 @@ const githubRepoUrl = 'https://github.com/mateo-meillon/clui-vue'
 			<div class="frame">
 				<GalleryNav v-model:open="galleryNavOpen" />
 
-				<main class="main">
+				<main ref="mainEl" class="main" @scroll.passive="onMainScroll">
 					<RouterView />
 				</main>
 			</div>
@@ -123,6 +186,12 @@ const githubRepoUrl = 'https://github.com/mateo-meillon/clui-vue'
 	flex-direction: column;
 	background: var(--color-bg);
 	color: var(--color-text);
+	box-sizing: border-box;
+	transition: padding-top $duration-normal $easing-default;
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
 
 	.bar {
 		display: flex;
@@ -136,9 +205,21 @@ const githubRepoUrl = 'https://github.com/mateo-meillon/clui-vue'
 		padding-left: calc(#{$space-5} + env(safe-area-inset-left, 0px));
 		border-bottom: 1px solid var(--color-border);
 		background: var(--color-bg-surface);
-		position: sticky;
+		position: fixed;
 		top: 0;
-		z-index: 10;
+		left: 0;
+		right: 0;
+		z-index: 25;
+		transition: transform $duration-slow $easing-default;
+
+		&.bar--hidden {
+			transform: translateY(-100%);
+			pointer-events: none;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
 
 		.start {
 			display: flex;

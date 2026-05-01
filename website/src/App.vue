@@ -12,22 +12,26 @@ import { RouterView } from 'vue-router'
 html {
 	height: 100%;
 	height: -webkit-fill-available;
+	overflow: hidden;
 	scroll-behavior: smooth;
 }
 
 body {
 	margin: 0;
+	height: 100%;
 	min-height: 100%;
 	min-height: 100dvh;
 	min-height: -webkit-fill-available;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 #app {
-	min-height: 100%;
-	min-height: 100dvh;
-	min-height: -webkit-fill-available;
+	flex: 1;
 	display: flex;
 	flex-direction: column;
+	min-height: 0;
 }
 
 .app-root {
