@@ -38,6 +38,8 @@
 
 body {
 	min-height: 100vh;
+	min-height: 100dvh;
+	min-height: -webkit-fill-available;
 	color: var(--color-text);
 	background: var(--color-bg);
 	line-height: 1.6;
