@@ -88,7 +88,7 @@ function onMainScroll(ev: Event): void {
 }
 
 const galleryStyle = computed(() => ({
-	paddingTop: headerHidden.value ? '0px' : `${headerHeightPx.value}px`,
+	paddingTop: `${headerHeightPx.value}px`,
 }))
 
 watch(
@@ -187,11 +187,6 @@ onUnmounted(() => {
 	background: var(--color-bg);
 	color: var(--color-text);
 	box-sizing: border-box;
-	transition: padding-top $duration-normal $easing-default;
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
-	}
 
 	.bar {
 		display: flex;
