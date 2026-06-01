@@ -1,4 +1,4 @@
-import type { IconName } from './icons'
+export type IconName = string
 
 export type UiSize = 'sm' | 'md' | 'lg' | 'auto'
 

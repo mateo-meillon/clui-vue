@@ -4,27 +4,27 @@ import { galleryRegistry } from './registry'
 const COMPONENTS_ROOT_ID = 'components-root'
 
 const playgroundIcons: Record<string, IconName> = {
-	button: 'smartButton',
-	input: 'textFields',
+	button: 'smart_button',
+	input: 'text_fields',
 	'form-field': 'label',
-	select: 'arrowDropDownCircle',
-	card: 'creditCard',
-	radio: 'radioButtonChecked',
-	dropdown: 'arrowDropDownCircle',
-	modal: 'chatBubble',
+	select: 'arrow_drop_down_circle',
+	card: 'credit_card',
+	radio: 'radio_button_checked',
+	dropdown: 'arrow_drop_down_circle',
+	modal: 'chat_bubble',
 	skeleton: 'deblur',
-	tree: 'accountTree',
+	tree: 'account_tree',
 	toast: 'notifications',
-	'route-progress': 'linearScale',
+	'route-progress': 'linear_scale',
 	icon: 'palette',
 	tabs: 'tabs',
-	table: 'tableChart',
+	table: 'table_chart',
 }
 
 export function buildGalleryNavTree(): UiTreeNode[] {
 	return [
-		{ id: 'getting-started', label: 'Getting started', icon: 'menuBook' },
-		{ id: 'overview', label: 'Overview', icon: 'gridView' },
+		{ id: 'getting-started', label: 'Getting started', icon: 'menu_book' },
+		{ id: 'overview', label: 'Overview', icon: 'grid_view' },
 		{
 			id: COMPONENTS_ROOT_ID,
 			label: 'Components',

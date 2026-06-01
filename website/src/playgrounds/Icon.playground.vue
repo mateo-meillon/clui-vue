@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { icons, type IconName, type SelectOption } from 'clui-vue'
+import type { IconName, SelectOption } from 'clui-vue'
 import HighlightedCode from '../components/HighlightedCode.vue'
 import PlaygroundPage from '../components/PlaygroundPage.vue'
 import IconExamples from './examples/Icon.examples.vue'
@@ -9,10 +9,33 @@ import iconExamplesRaw from './examples/Icon.examples.vue?raw'
 const name = ref<IconName>('search')
 const sizeStr = ref('28')
 
-const iconOptions: SelectOption[] = (Object.keys(icons) as IconName[])
+const demoIcons: IconName[] = [
+	'search',
+	'settings',
+	'menu',
+	'close',
+	'add',
+	'home',
+	'person',
+	'mail',
+	'calendar_today',
+	'notifications',
+	'check_circle',
+	'arrow_back',
+	'arrow_forward',
+	'light_mode',
+	'dark_mode',
+	'favorite',
+	'bookmark',
+	'download',
+	'upload',
+	'edit',
+]
+
+const iconOptions: SelectOption[] = demoIcons
 	.slice()
 	.sort((a, b) => a.localeCompare(b))
-	.map((n) => ({ label: n, value: n }))
+	.map((iconName) => ({ label: iconName, value: iconName }))
 
 const sizeProp = computed(() => {
 	const n = Number.parseFloat(sizeStr.value)
@@ -24,7 +47,14 @@ const sizeProp = computed(() => {
 <template>
 	<PlaygroundPage title="Icon">
 		<template #explain>
-			<p>Inline SVG icons from the bundled registry. Pass any <code>IconName</code> key and a pixel number or CSS length for <code>size</code>.</p>
+			<p>
+				Material Symbols Rounded icons are available by ligature name (snake_case). Pass any icon name from Google Material Symbols and a pixel number or CSS length for
+				<code>size</code>.
+			</p>
+			<p>
+				Browse the full set at
+				<a href="https://fonts.google.com/icons" target="_blank" rel="noopener noreferrer">fonts.google.com/icons</a>.
+			</p>
 		</template>
 		<template #examples>
 			<IconExamples />

@@ -1,24 +1,7 @@
 import type { App } from 'vue'
-import {
-	UiButton,
-	UiCard,
-	UiDropdown,
-	UiFormField,
-	UiIcon,
-	UiInput,
-	UiModal,
-	UiRadio,
-	UiRouteProgress,
-	UiSelect,
-	UiSkeleton,
-	UiToastHost,
-	UiTable,
-	UiTabs,
-	UiTree,
-} from './components'
+import { UiButton, UiCard, UiDropdown, UiFormField, UiIcon, UiInput, UiModal, UiRadio, UiRouteProgress, UiSelect, UiSkeleton, UiToastHost, UiTable, UiTabs, UiTree } from './components'
 
 export * from './components'
-export * from './icons'
 export type * from './types'
 export { dismissToast, showToast, toastDanger, toastSuccess, toastWarning, useToast } from './useToast'
 export type { ShowToastOptions, UiToast, UiToastTone } from './useToast'

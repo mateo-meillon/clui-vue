@@ -1,6 +1,6 @@
 {
 	"name": "clui-vue",
-	"version": "0.1.11",
+	"version": "0.2.0",
 	"description": "Vue 3 design-system components, tokens, and theme helpers (extracted for reuse).",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -61,5 +61,8 @@
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
+	},
+	"dependencies": {
+		"@material-symbols/font-400": "^0.44.10"
 	}
 }

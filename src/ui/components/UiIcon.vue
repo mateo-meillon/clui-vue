@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { icons, type IconName } from '../icons'
+import type { IconName } from '../types'
 
 const props = withDefaults(
 	defineProps<{
@@ -12,13 +12,11 @@ const props = withDefaults(
 	},
 )
 
-const svg = computed(() => icons[props.name])
 const pxSize = computed(() => (typeof props.size === 'number' ? `${props.size}px` : props.size))
 </script>
 
 <template>
-	<!-- eslint-disable-next-line vue/no-v-html -- icons are from a trusted internal registry -->
-	<i class="ui-icon" :style="{ width: pxSize, height: pxSize }" aria-hidden="true" v-html="svg" />
+	<span class="ui-icon material-symbols-rounded" :style="{ fontSize: pxSize, width: pxSize, height: pxSize }" aria-hidden="true">{{ name }}</span>
 </template>
 
 <style scoped lang="scss">
@@ -27,12 +25,12 @@ const pxSize = computed(() => (typeof props.size === 'number' ? `${props.size}px
 	align-items: center;
 	justify-content: center;
 	flex-shrink: 0;
-	line-height: 0;
+	line-height: 1;
 	font-style: normal;
-
-	:deep(svg) {
-		width: 100%;
-		height: 100%;
-	}
+	font-weight: normal;
+	user-select: none;
+	color: currentColor;
+	font-variation-settings: 'FILL' 0;
+	overflow: hidden;
 }
 </style>

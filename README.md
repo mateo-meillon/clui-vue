@@ -29,6 +29,17 @@ app.mount('#app')
 
 Importing from `clui-vue` also applies the default theme (via `data-theme` on `document.documentElement`) and reads/writes the current theme in `localStorage` under the key `app-theme`. To customize theme, use the exported `useTheme()` and `isDarkTheme()`.
 
+## Icons
+
+`UiIcon` and all `icon` props use Google Material Symbols (rounded) by ligature name in snake_case:
+
+```vue
+<UiIcon name="check_circle" />
+<UiButton icon="arrow_back">Back</UiButton>
+```
+
+Find icon names at [fonts.google.com/icons](https://fonts.google.com/icons).
+
 ## Sass tokens and theme
 
 `package.json` exports SCSS entry points so you can use design tokens in your own components:
@@ -38,7 +49,7 @@ Importing from `clui-vue` also applies the default theme (via `data-theme` on `d
 // or @use 'clui-vue/theme' for CSS variables (light/dark) built from tokens
 ```
 
-For a full page base layer (resets, scrollbar, body, theme variables) without extra font files from your app, use the optional `styles/base` export in your app shell (load your own fonts separately):
+For a full page base layer (resets, Material Symbols font import, scrollbar, body, theme variables), use the optional `styles/base` export in your app shell:
 
 ```scss
 @use 'clui-vue/styles/base' as *;

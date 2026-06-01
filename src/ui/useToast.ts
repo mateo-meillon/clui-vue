@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import type { IconName } from './icons'
+import type { IconName } from './types'
 
 export type UiToastTone = 'default' | 'success' | 'warning' | 'danger'
 
@@ -40,7 +40,7 @@ export function dismissToast(id: number): void {
 }
 
 function iconForTone(tone: UiToastTone): IconName | undefined {
-	if (tone === 'success') return 'checkCircle'
+	if (tone === 'success') return 'check_circle'
 	if (tone === 'danger') return 'error'
 	if (tone === 'warning') return 'report'
 	return undefined

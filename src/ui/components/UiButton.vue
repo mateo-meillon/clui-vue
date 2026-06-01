@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
-import type { IconName } from '../icons'
-import type { UiSize, UiVariant } from '../types'
+import { computed, useSlots, type Slots } from 'vue'
+import type { IconName, UiSize, UiVariant } from '../types'
 
 const props = withDefaults(
 	defineProps<{
@@ -38,8 +37,8 @@ defineEmits<{
 	click: [event: MouseEvent]
 }>()
 
-const slots = useSlots()
-const iconOnly = computed(() => !!props.icon && !slots.default)
+const slots: Slots = useSlots()
+const iconOnly = computed<boolean>(() => !!props.icon && !slots.default)
 
 const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
 

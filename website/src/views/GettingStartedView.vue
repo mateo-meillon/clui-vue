@@ -70,7 +70,7 @@ const { theme, toggleTheme } = useTheme()`
 			<div class="cta-inner">
 				<div class="cta-text">
 					<div class="cta-head">
-						<UiIcon name="gridView" class="cta-icon" :size="20" aria-hidden="true" />
+						<UiIcon name="grid_view" class="cta-icon" :size="20" aria-hidden="true" />
 						<h2 class="cta-title">Explore the gallery</h2>
 					</div>
 					<p class="cta-copy">Open <strong>Overview</strong> for the full grid, or use <strong>Components</strong> in the sidebar to jump straight into a playground.</p>

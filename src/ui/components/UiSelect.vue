@@ -121,7 +121,7 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 		>
 			<span class="ui-select__value">{{ displayLabel }}</span>
 			<span class="ui-select__chevron" aria-hidden="true">
-				<UiIcon name="chevronRight" :size="12" />
+				<UiIcon name="chevron_right" :size="12" />
 			</span>
 		</button>
 		<Transition name="ui-select-panel">

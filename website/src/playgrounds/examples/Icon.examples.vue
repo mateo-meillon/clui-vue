@@ -1,19 +1,48 @@
 <script setup lang="ts">
-import { icons, type IconName } from 'clui-vue'
+import type { IconName } from 'clui-vue'
 
-const allIconNames = (Object.keys(icons) as IconName[]).slice().sort((a, b) => a.localeCompare(b))
+const sampleIconNames: IconName[] = [
+	'search',
+	'settings',
+	'menu',
+	'close',
+	'add',
+	'home',
+	'person',
+	'mail',
+	'calendar_today',
+	'notifications',
+	'check_circle',
+	'report',
+	'arrow_back',
+	'arrow_forward',
+	'chevron_right',
+	'chevron_left',
+	'light_mode',
+	'dark_mode',
+	'favorite',
+	'bookmark',
+	'download',
+	'upload',
+	'edit',
+	'delete',
+]
 </script>
 
 <template>
 	<div class="examples">
 		<div class="group">
-			<p class="label">All icons (registry)</p>
+			<p class="label">Sample Material Symbols (rounded)</p>
 			<div class="icon-grid">
-				<div v-for="ic in allIconNames" :key="ic" class="icon-cell">
+				<div v-for="ic in sampleIconNames" :key="ic" class="icon-cell">
 					<UiIcon :name="ic" :size="24" />
 					<span class="icon-name">{{ ic }}</span>
 				</div>
 			</div>
+			<p class="hint">
+				Need a different icon? Search the full catalog at
+				<a href="https://fonts.google.com/icons" target="_blank" rel="noopener noreferrer">fonts.google.com/icons</a>.
+			</p>
 		</div>
 	</div>
 </template>
@@ -40,5 +69,11 @@ const allIconNames = (Object.keys(icons) as IconName[]).slice().sort((a, b) => a
 	color: var(--color-text-secondary);
 	word-break: break-all;
 	line-height: 1.3;
+}
+
+.hint {
+	margin-top: $space-4;
+	font-size: $text-sm;
+	color: var(--color-text-secondary);
 }
 </style>

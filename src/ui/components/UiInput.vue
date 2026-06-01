@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { IconName } from '../icons'
-import type { UiSize } from '../types'
+import type { IconName, UiSize } from '../types'
 
 const props = withDefaults(
 	defineProps<{

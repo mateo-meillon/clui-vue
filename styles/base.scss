@@ -1,5 +1,6 @@
-/* Optional global base: theme CSS variables, scrollbar, body (no font files). */
+/* Optional global base: theme CSS variables, Material Symbols font, scrollbar, body. */
 @use '../src/ui/theme' as *;
+@import '@material-symbols/font-400/rounded.css';
 
 :root {
 	--app-titlebar-height: 33px;

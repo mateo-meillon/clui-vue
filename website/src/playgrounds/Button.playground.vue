@@ -34,7 +34,7 @@ const alignOptions: SelectOption[] = [
 	{ label: 'Center', value: 'center' },
 	{ label: 'End', value: 'end' },
 ]
-const demoIcons: IconName[] = ['add', 'search', 'settings', 'close', 'menu', 'checkCircle']
+const demoIcons: IconName[] = ['add', 'search', 'settings', 'close', 'menu', 'check_circle']
 const iconOptions: SelectOption[] = [{ label: '(none)', value: 'none' }, ...demoIcons.map((n) => ({ label: n, value: n }))]
 
 const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (iconChoice.value as IconName)))

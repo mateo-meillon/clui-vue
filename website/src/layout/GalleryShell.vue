@@ -139,14 +139,14 @@ onUnmounted(() => {
 				</div>
 				<div class="actions">
 					<div class="external">
-						<UiButton variant="ghost" icon="npm" aria-label="clui-vue on npm" :href="npmPackageUrl" target="_blank" rel="noopener noreferrer" />
-						<UiButton variant="ghost" icon="github" aria-label="clui-vue on GitHub" :href="githubRepoUrl" target="_blank" rel="noopener noreferrer" />
+						<UiButton variant="ghost" icon="code" aria-label="clui-vue on npm" :href="npmPackageUrl" target="_blank" rel="noopener noreferrer" />
+						<UiButton variant="ghost" icon="link" aria-label="clui-vue on GitHub" :href="githubRepoUrl" target="_blank" rel="noopener noreferrer" />
 					</div>
 					<div class="theme-tools">
 						<UiFormField class="field" label="Theme">
 							<UiSelect v-model="theme" :options="themeSelectOptions" size="md" />
 						</UiFormField>
-						<UiButton variant="secondary" :icon="isDarkTheme(theme) ? 'lightMode' : 'darkMode'" @click="toggleTheme"> Toggle </UiButton>
+						<UiButton variant="secondary" :icon="isDarkTheme(theme) ? 'light_mode' : 'dark_mode'" @click="toggleTheme"> Toggle </UiButton>
 					</div>
 				</div>
 			</header>

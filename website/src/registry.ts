@@ -96,7 +96,7 @@ export const galleryRegistry: GalleryEntry[] = [
 	{
 		slug: 'icon',
 		title: 'Icon',
-		shortDescription: 'Registered SVG icons.',
+		shortDescription: 'Material Symbols ligature icons.',
 		playground: () => import('./playgrounds/Icon.playground.vue'),
 		preview: () => import('./previews/Icon.preview.vue'),
 	},

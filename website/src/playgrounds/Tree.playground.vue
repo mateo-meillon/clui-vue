@@ -16,7 +16,7 @@ const demoNodes: UiTreeNode[] = [
 				id: 'src',
 				label: 'src',
 				icon: 'folder',
-				children: [{ id: 'app', label: 'App.vue', icon: 'editSquare' }],
+				children: [{ id: 'app', label: 'App.vue', icon: 'edit_square' }],
 			},
 			{ id: 'readme', label: 'README.md', icon: 'drafts' },
 		],

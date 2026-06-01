@@ -23,9 +23,7 @@ function isExpanded(id: string): boolean {
 }
 
 function toggle(id: string): void {
-	const next = expandedKeys.value.includes(id)
-		? expandedKeys.value.filter((k) => k !== id)
-		: [...expandedKeys.value, id]
+	const next = expandedKeys.value.includes(id) ? expandedKeys.value.filter((k) => k !== id) : [...expandedKeys.value, id]
 	expandedKeys.value = next
 }
 
@@ -73,13 +71,8 @@ function isRowActive(node: UiTreeNode): boolean {
 				type="button"
 				@click="onRowClick(node)"
 			>
-				<span
-					v-if="node.children?.length"
-					class="ui-tree__expand"
-					:class="{ 'ui-tree__expand--open': isExpanded(node.id) }"
-					@click.stop="toggle(node.id)"
-				>
-					<UiIcon name="chevronRight" :size="14" />
+				<span v-if="node.children?.length" class="ui-tree__expand" :class="{ 'ui-tree__expand--open': isExpanded(node.id) }" @click.stop="toggle(node.id)">
+					<UiIcon name="chevron_right" :size="14" />
 				</span>
 				<span v-else class="ui-tree__expand-spacer" />
 				<UiIcon v-if="node.icon" :name="node.icon" :size="16" class="ui-tree__icon" />
