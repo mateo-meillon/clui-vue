@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { nextTick, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
+import { getDropdownPanelStyle, type DropdownPlacement } from '../dropdownPlacement'
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
-		/** Menu alignment relative to trigger */
+		/** Preferred menu alignment relative to trigger */
 		align?: 'start' | 'end'
 	}>(),
 	{
@@ -11,15 +12,60 @@ withDefaults(
 	},
 )
 
+/** Matches $space-2 in tokens */
+const PANEL_GAP = 6
+
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
+const anchorRef = ref<HTMLElement | null>(null)
+const panelRef = ref<HTMLElement | null>(null)
+const placementReady = ref(false)
+const resolvedPlacement = ref<DropdownPlacement>('bottom-start')
+const panelTop = ref(0)
+const panelLeft = ref(0)
+const panelMinWidth = ref<number | undefined>(undefined)
+
 let docClickHandler: ((e: MouseEvent) => void) | null = null
+let repositionHandler: (() => void) | null = null
+
+const panelVertical = computed(() => (resolvedPlacement.value.startsWith('top') ? 'top' : 'bottom'))
+
+const panelInlineStyle = computed(() => ({
+	top: `${panelTop.value}px`,
+	left: `${panelLeft.value}px`,
+	minWidth: panelMinWidth.value ? `${panelMinWidth.value}px` : undefined,
+	visibility: (placementReady.value ? 'visible' : 'hidden') as 'visible' | 'hidden',
+}))
 
 function removeDocClick(): void {
 	if (docClickHandler) {
 		document.removeEventListener('click', docClickHandler)
 		docClickHandler = null
 	}
+}
+
+function removeRepositionListeners(): void {
+	if (repositionHandler) {
+		window.removeEventListener('resize', repositionHandler)
+		window.removeEventListener('scroll', repositionHandler, true)
+		repositionHandler = null
+	}
+}
+
+function updatePlacement(): void {
+	const anchor = anchorRef.value
+	const panel = panelRef.value
+	if (!anchor || !panel) return
+
+	const anchorRect = anchor.getBoundingClientRect()
+	const panelRect = panel.getBoundingClientRect()
+	const style = getDropdownPanelStyle(anchorRect, panelRect, props.align, PANEL_GAP)
+
+	resolvedPlacement.value = style.placement
+	panelTop.value = style.top
+	panelLeft.value = style.left
+	panelMinWidth.value = style.minWidth
+	placementReady.value = true
 }
 
 function close(): void {
@@ -34,37 +80,58 @@ function onEscape(e: KeyboardEvent): void {
 	if (e.key === 'Escape') close()
 }
 
+function addRepositionListeners(): void {
+	removeRepositionListeners()
+	repositionHandler = () => updatePlacement()
+	window.addEventListener('resize', repositionHandler)
+	window.addEventListener('scroll', repositionHandler, true)
+}
+
 watch(open, (isOpen) => {
 	removeDocClick()
+	removeRepositionListeners()
+
 	if (isOpen) {
+		placementReady.value = false
+		resolvedPlacement.value = `bottom-${props.align}` as DropdownPlacement
 		document.addEventListener('keydown', onEscape)
+		addRepositionListeners()
+
 		nextTick(() => {
+			updatePlacement()
 			docClickHandler = (e: MouseEvent) => {
-				if (root.value && !root.value.contains(e.target as Node)) close()
+				const target = e.target as Node
+				const insideRoot = root.value?.contains(target) ?? false
+				const insidePanel = panelRef.value?.contains(target) ?? false
+				if (!insideRoot && !insidePanel) close()
 			}
 			document.addEventListener('click', docClickHandler)
 		})
 	} else {
+		placementReady.value = false
 		document.removeEventListener('keydown', onEscape)
 	}
 })
 
 onUnmounted(() => {
 	removeDocClick()
+	removeRepositionListeners()
 	document.removeEventListener('keydown', onEscape)
 })
 </script>
 
 <template>
 	<div ref="root" class="ui-dropdown">
-		<div class="ui-dropdown__anchor">
+		<div ref="anchorRef" class="ui-dropdown__anchor">
 			<slot name="trigger" :is-open="open" :toggle="toggle" :close="close" />
 		</div>
-		<Transition name="ui-dropdown">
-			<div v-if="open" class="ui-dropdown__panel" :class="`ui-dropdown__panel--align-${align}`" role="menu" aria-orientation="vertical">
-				<slot :close="close" />
-			</div>
-		</Transition>
+		<Teleport to="body">
+			<Transition :name="`ui-dropdown-${panelVertical}`">
+				<div v-if="open" ref="panelRef" class="ui-dropdown__panel" :class="`ui-dropdown__panel--${panelVertical}`" :style="panelInlineStyle" role="menu" aria-orientation="vertical">
+					<slot :close="close" />
+				</div>
+			</Transition>
+		</Teleport>
 	</div>
 </template>
 
@@ -72,7 +139,6 @@ onUnmounted(() => {
 @use '../tokens' as *;
 
 .ui-dropdown {
-	position: relative;
 	display: inline-flex;
 	align-items: center;
 }
@@ -83,9 +149,7 @@ onUnmounted(() => {
 }
 
 .ui-dropdown__panel {
-	position: absolute;
-	top: calc(100% + #{$space-2});
-	// Must float above app content (e.g., editors with their own stacking contexts).
+	position: fixed;
 	z-index: 6000;
 	min-width: 11rem;
 	padding: $space-1;
@@ -96,14 +160,6 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	gap: $space-1;
-
-	&--align-start {
-		left: 0;
-	}
-
-	&--align-end {
-		right: 0;
-	}
 }
 
 :deep(.ui-dropdown__item),
@@ -129,16 +185,24 @@ onUnmounted(() => {
 	}
 }
 
-.ui-dropdown-enter-active,
-.ui-dropdown-leave-active {
+.ui-dropdown-bottom-enter-active,
+.ui-dropdown-bottom-leave-active,
+.ui-dropdown-top-enter-active,
+.ui-dropdown-top-leave-active {
 	transition:
 		opacity $duration-normal $easing-default,
 		transform $duration-normal $easing-default;
 }
 
-.ui-dropdown-enter-from,
-.ui-dropdown-leave-to {
+.ui-dropdown-bottom-enter-from,
+.ui-dropdown-bottom-leave-to {
 	opacity: 0;
 	transform: translateY(-4px);
+}
+
+.ui-dropdown-top-enter-from,
+.ui-dropdown-top-leave-to {
+	opacity: 0;
+	transform: translateY(4px);
 }
 </style>
