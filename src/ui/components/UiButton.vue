@@ -151,7 +151,6 @@ const anchorRel = computed(() => {
 	&--secondary {
 		background-color: var(--color-btn-secondary-bg);
 		color: var(--color-btn-secondary-text);
-		box-shadow: 0 0 0 1px var(--color-btn-secondary-border, transparent);
 
 		&:hover {
 			background-color: var(--color-btn-secondary-bg-hover);

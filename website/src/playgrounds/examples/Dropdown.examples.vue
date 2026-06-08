@@ -93,8 +93,6 @@
 .corner-demo {
 	position: relative;
 	min-height: 12rem;
-	border: 1px dashed var(--color-border);
-	border-radius: $radius-md;
 }
 
 .corner-demo__bl {
@@ -110,8 +108,6 @@
 }
 
 .overflow-box {
-	border: 1px solid var(--color-border);
-	border-radius: $radius-md;
 	overflow: hidden;
 	max-width: 16rem;
 }

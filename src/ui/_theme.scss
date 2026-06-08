@@ -12,10 +12,9 @@
 	--color-text-secondary: #{$color-gray-600};
 	--color-border: #{$color-gray-200};
 
-	--color-btn-secondary-bg: #{$color-white};
-	--color-btn-secondary-bg-hover: #{$color-gray-100};
-	--color-btn-secondary-bg-active: #{$color-gray-200};
-	--color-btn-secondary-border: #{$color-gray-200};
+	--color-btn-secondary-bg: #{$color-gray-100};
+	--color-btn-secondary-bg-hover: #{$color-gray-200};
+	--color-btn-secondary-bg-active: #{$color-gray-300};
 	--color-btn-secondary-text: #{$color-gray-800};
 
 	--color-btn-ghost-text: #{$color-gray-700};
@@ -91,7 +90,6 @@
 	--color-btn-secondary-bg: #{$color-gray-800};
 	--color-btn-secondary-bg-hover: #{$color-gray-700};
 	--color-btn-secondary-bg-active: #{$color-gray-600};
-	--color-btn-secondary-border: transparent;
 	--color-btn-secondary-text: #{$color-gray-50};
 
 	--color-btn-ghost-text: #{$color-gray-300};
@@ -133,7 +131,6 @@
 	--color-btn-secondary-bg: #1f2937;
 	--color-btn-secondary-bg-hover: #334155;
 	--color-btn-secondary-bg-active: #475569;
-	--color-btn-secondary-border: transparent;
 	--color-btn-secondary-text: #f8fafc;
 
 	--color-btn-ghost-text: #cbd5e1;
@@ -165,7 +162,6 @@
 	--color-btn-secondary-bg: #171717;
 	--color-btn-secondary-bg-hover: #262626;
 	--color-btn-secondary-bg-active: #404040;
-	--color-btn-secondary-border: transparent;
 	--color-btn-secondary-text: #ffffff;
 
 	--color-btn-ghost-text: #e5e5e5;
@@ -197,7 +193,6 @@
 	--color-btn-secondary-bg: #{$color-gray-800};
 	--color-btn-secondary-bg-hover: #{$color-gray-700};
 	--color-btn-secondary-bg-active: #{$color-gray-600};
-	--color-btn-secondary-border: transparent;
 	--color-btn-secondary-text: #{$color-gray-50};
 
 	--color-btn-ghost-text: #{$color-gray-300};
