@@ -95,7 +95,7 @@ const anchorRel = computed(() => {
 	text-decoration: none;
 	box-sizing: border-box;
 	transition:
-		background $duration-normal $easing-default,
+		background-color $duration-normal $easing-default,
 		color $duration-normal $easing-default,
 		box-shadow $duration-normal $easing-default;
 	white-space: nowrap;
@@ -136,54 +136,55 @@ const anchorRel = computed(() => {
 
 	// ── Variants ───────────────────────────────────────────────────────────
 	&--primary {
-		background: var(--color-primary);
+		background-color: var(--color-primary);
 		color: $color-white;
 
 		&:hover {
-			background: var(--color-primary-hover);
+			background-color: var(--color-primary-hover);
 		}
 
 		&:active {
-			background: var(--color-primary-active);
+			background-color: var(--color-primary-active);
 		}
 	}
 
 	&--secondary {
-		background: var(--color-btn-secondary-bg);
+		background-color: var(--color-btn-secondary-bg);
 		color: var(--color-btn-secondary-text);
+		box-shadow: 0 0 0 1px var(--color-btn-secondary-border, transparent);
 
 		&:hover {
-			background: var(--color-btn-secondary-bg-hover);
+			background-color: var(--color-btn-secondary-bg-hover);
 		}
 
 		&:active {
-			background: var(--color-btn-secondary-bg-active);
+			background-color: var(--color-btn-secondary-bg-active);
 		}
 	}
 
 	&--ghost {
-		background: transparent;
+		background-color: transparent;
 		color: var(--color-btn-ghost-text);
 
 		&:hover {
-			background: var(--color-btn-ghost-bg-hover);
+			background-color: var(--color-btn-ghost-bg-hover);
 		}
 
 		&:active {
-			background: var(--color-btn-ghost-bg-active);
+			background-color: var(--color-btn-ghost-bg-active);
 		}
 	}
 
 	&--danger {
-		background: var(--color-btn-danger-bg);
+		background-color: var(--color-btn-danger-bg);
 		color: var(--color-btn-danger-text);
 
 		&:hover {
-			background: var(--color-btn-danger-bg-hover);
+			background-color: var(--color-btn-danger-bg-hover);
 		}
 
 		&:active {
-			background: var(--color-btn-danger-bg-active);
+			background-color: var(--color-btn-danger-bg-active);
 		}
 	}
 
@@ -206,16 +207,16 @@ const anchorRel = computed(() => {
 
 	&--active {
 		color: var(--color-primary);
-		background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+		background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
 
 		&:hover {
 			color: var(--color-primary-hover);
-			background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+			background-color: color-mix(in srgb, var(--color-primary) 16%, transparent);
 		}
 
 		&:active {
 			color: var(--color-primary-active);
-			background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+			background-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
 		}
 
 		:deep(.ui-icon) {
