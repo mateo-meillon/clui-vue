@@ -114,6 +114,13 @@ export const galleryRegistry: GalleryEntry[] = [
 		playground: () => import('./playgrounds/Table.playground.vue'),
 		preview: () => import('./previews/Table.preview.vue'),
 	},
+	{
+		slug: 'tooltip',
+		title: 'Tooltip',
+		shortDescription: 'Contextual hints on hover and focus.',
+		playground: () => import('./playgrounds/Tooltip.playground.vue'),
+		preview: () => import('./previews/Tooltip.preview.vue'),
+	},
 ]
 
 export function getEntryBySlug(slug: string): GalleryEntry | undefined {

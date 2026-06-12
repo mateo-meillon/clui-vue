@@ -1,5 +1,22 @@
 import type { App } from 'vue'
-import { UiButton, UiCard, UiDropdown, UiFormField, UiIcon, UiInput, UiModal, UiRadio, UiRouteProgress, UiSelect, UiSkeleton, UiToastHost, UiTable, UiTabs, UiTree } from './components'
+import {
+	UiButton,
+	UiCard,
+	UiDropdown,
+	UiFormField,
+	UiIcon,
+	UiInput,
+	UiModal,
+	UiRadio,
+	UiRouteProgress,
+	UiSelect,
+	UiSkeleton,
+	UiToastHost,
+	UiTable,
+	UiTabs,
+	UiTooltip,
+	UiTree,
+} from './components'
 
 export * from './components'
 export type * from './types'
@@ -21,6 +38,7 @@ const components = {
 	UiToastHost,
 	UiTable,
 	UiTabs,
+	UiTooltip,
 	UiTree,
 } as Record<string, ReturnType<typeof import('vue').defineComponent>>
 
