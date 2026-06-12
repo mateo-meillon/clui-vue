@@ -14,6 +14,7 @@ import {
 	UiToastHost,
 	UiTable,
 	UiTabs,
+	UiTextarea,
 	UiTooltip,
 	UiTree,
 } from './components'
@@ -38,6 +39,7 @@ const components = {
 	UiToastHost,
 	UiTable,
 	UiTabs,
+	UiTextarea,
 	UiTooltip,
 	UiTree,
 } as Record<string, ReturnType<typeof import('vue').defineComponent>>
