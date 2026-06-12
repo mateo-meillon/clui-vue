@@ -1,6 +1,6 @@
 {
 	"name": "clui-vue",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Vue 3 design-system components, tokens, and theme helpers (extracted for reuse).",
 	"type": "module",
 	"main": "./dist/index.js",
