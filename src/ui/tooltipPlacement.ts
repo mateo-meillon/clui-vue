@@ -5,6 +5,8 @@ export interface TooltipPanelPosition {
 	placement: TooltipPlacement
 	top: number
 	left: number
+	/** When set, apply as CSS transform on the panel (e.g. translateX(-50%)) */
+	transform?: string
 }
 
 export interface TooltipViewport {
@@ -17,20 +19,20 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function getCrossAxisPosition(align: TooltipAlign, anchorStart: number, anchorSize: number, panelSize: number, viewportSize: number, margin: number): number {
-	let left: number
+	let position: number
 
 	switch (align) {
 		case 'start':
-			left = anchorStart
+			position = anchorStart
 			break
 		case 'end':
-			left = anchorStart + anchorSize - panelSize
+			position = anchorStart + anchorSize - panelSize
 			break
 		default:
-			left = anchorStart + anchorSize / 2 - panelSize / 2
+			position = anchorStart + anchorSize / 2 - panelSize / 2
 	}
 
-	return clamp(left, margin, viewportSize - panelSize - margin)
+	return clamp(position, margin, viewportSize - panelSize - margin)
 }
 
 function getCoords(placement: TooltipPlacement, align: TooltipAlign, anchor: DOMRect, panel: DOMRect, gap: number, viewport: TooltipViewport, margin: number): { top: number; left: number } {
@@ -103,6 +105,57 @@ export function resolveTooltipPlacement(
 	return preferredPlacement
 }
 
+function getCenteredPanelStyle(
+	placement: TooltipPlacement,
+	anchor: DOMRect,
+	panel: DOMRect,
+	gap: number,
+	viewport: TooltipViewport,
+	margin: number,
+): Pick<TooltipPanelPosition, 'top' | 'left' | 'transform'> {
+	const isVertical = placement === 'top' || placement === 'bottom'
+
+	if (isVertical) {
+		const centerX = anchor.left + anchor.width / 2
+		const idealLeft = centerX - panel.width / 2
+		const fitsHorizontally = idealLeft >= margin && idealLeft + panel.width <= viewport.width - margin
+
+		const top = placement === 'top' ? anchor.top - gap - panel.height : anchor.bottom + gap
+
+		if (fitsHorizontally) {
+			return {
+				top: clamp(top, margin, viewport.height - panel.height - margin),
+				left: centerX,
+				transform: 'translateX(-50%)',
+			}
+		}
+
+		return {
+			top: clamp(top, margin, viewport.height - panel.height - margin),
+			left: clamp(idealLeft, margin, viewport.width - panel.width - margin),
+		}
+	}
+
+	const centerY = anchor.top + anchor.height / 2
+	const idealTop = centerY - panel.height / 2
+	const fitsVertically = idealTop >= margin && idealTop + panel.height <= viewport.height - margin
+
+	const left = placement === 'left' ? anchor.left - gap - panel.width : anchor.right + gap
+
+	if (fitsVertically) {
+		return {
+			top: centerY,
+			left: clamp(left, margin, viewport.width - panel.width - margin),
+			transform: 'translateY(-50%)',
+		}
+	}
+
+	return {
+		top: clamp(idealTop, margin, viewport.height - panel.height - margin),
+		left: clamp(left, margin, viewport.width - panel.width - margin),
+	}
+}
+
 export function getTooltipPanelStyle(
 	anchor: DOMRect,
 	panel: DOMRect,
@@ -116,6 +169,15 @@ export function getTooltipPanelStyle(
 	margin = 8,
 ): TooltipPanelPosition {
 	const placement = resolveTooltipPlacement(anchor, panel, preferredPlacement, gap, viewport, margin)
+
+	if (align === 'center') {
+		const centered = getCenteredPanelStyle(placement, anchor, panel, gap, viewport, margin)
+		return {
+			placement,
+			...centered,
+		}
+	}
+
 	const coords = getCoords(placement, align, anchor, panel, gap, viewport, margin)
 
 	return {

@@ -40,9 +40,12 @@ const placementReady = ref(false)
 const resolvedPlacement = ref<TooltipPlacement>('top')
 const panelTop = ref(0)
 const panelLeft = ref(0)
+const panelTransform = ref<string | undefined>(undefined)
 
 let showTimer: ReturnType<typeof setTimeout> | null = null
 let repositionHandler: (() => void) | null = null
+let resizeObserver: ResizeObserver | null = null
+let placementFrame: number | null = null
 
 const hasContent = computed(() => Boolean(slots.content) || Boolean(props.content))
 
@@ -50,6 +53,7 @@ const panelInlineStyle = computed(() => ({
 	top: `${panelTop.value}px`,
 	left: `${panelLeft.value}px`,
 	maxWidth: `${props.maxWidth}px`,
+	transform: panelTransform.value,
 	visibility: (placementReady.value ? 'visible' : 'hidden') as 'visible' | 'hidden',
 }))
 
@@ -60,12 +64,24 @@ function clearShowTimer(): void {
 	}
 }
 
+function cancelPlacementFrame(): void {
+	if (placementFrame !== null) {
+		cancelAnimationFrame(placementFrame)
+		placementFrame = null
+	}
+}
+
 function removeRepositionListeners(): void {
 	if (repositionHandler) {
 		window.removeEventListener('resize', repositionHandler)
 		window.removeEventListener('scroll', repositionHandler, true)
 		repositionHandler = null
 	}
+}
+
+function removeResizeObserver(): void {
+	resizeObserver?.disconnect()
+	resizeObserver = null
 }
 
 function updatePlacement(): void {
@@ -80,14 +96,34 @@ function updatePlacement(): void {
 	resolvedPlacement.value = style.placement
 	panelTop.value = style.top
 	panelLeft.value = style.left
+	panelTransform.value = style.transform
 	placementReady.value = true
+}
+
+function schedulePlacement(): void {
+	cancelPlacementFrame()
+	nextTick(() => {
+		placementFrame = requestAnimationFrame(() => {
+			placementFrame = null
+			updatePlacement()
+		})
+	})
 }
 
 function addRepositionListeners(): void {
 	removeRepositionListeners()
-	repositionHandler = () => updatePlacement()
+	repositionHandler = () => schedulePlacement()
 	window.addEventListener('resize', repositionHandler)
 	window.addEventListener('scroll', repositionHandler, true)
+}
+
+function addResizeObserver(): void {
+	removeResizeObserver()
+	const panel = panelRef.value
+	if (!panel) return
+
+	resizeObserver = new ResizeObserver(() => schedulePlacement())
+	resizeObserver.observe(panel)
 }
 
 function show(): void {
@@ -106,23 +142,36 @@ function hide(): void {
 
 watch(visible, (isVisible) => {
 	removeRepositionListeners()
+	removeResizeObserver()
 
 	if (isVisible) {
 		placementReady.value = false
+		panelTransform.value = undefined
 		resolvedPlacement.value = props.placement
 		addRepositionListeners()
 
-		nextTick(() => {
-			updatePlacement()
-		})
+		schedulePlacement()
+		nextTick(() => addResizeObserver())
 	} else {
 		placementReady.value = false
+		panelTransform.value = undefined
 	}
 })
 
+watch(
+	() => props.content,
+	() => {
+		if (visible.value) {
+			schedulePlacement()
+		}
+	},
+)
+
 onUnmounted(() => {
 	clearShowTimer()
+	cancelPlacementFrame()
 	removeRepositionListeners()
+	removeResizeObserver()
 })
 </script>
 
@@ -205,14 +254,11 @@ onUnmounted(() => {
 
 .ui-tooltip-fade-enter-active,
 .ui-tooltip-fade-leave-active {
-	transition:
-		opacity $duration-normal $easing-default,
-		transform $duration-normal $easing-default;
+	transition: opacity $duration-normal $easing-default;
 }
 
 .ui-tooltip-fade-enter-from,
 .ui-tooltip-fade-leave-to {
 	opacity: 0;
-	transform: scale(0.96);
 }
 </style>
