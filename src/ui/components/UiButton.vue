@@ -166,7 +166,7 @@ const anchorRel = computed(() => {
 		color: var(--color-btn-ghost-text);
 
 		&:hover {
-			background-color: var(--color-btn-ghost-bg-hover);
+			background-color: var(--color-btn-secondary-bg);
 		}
 
 		&:active {
