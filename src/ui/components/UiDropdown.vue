@@ -27,6 +27,8 @@ const panelMinWidth = ref<number | undefined>(undefined)
 
 let docClickHandler: ((e: MouseEvent) => void) | null = null
 let repositionHandler: (() => void) | null = null
+let resizeObserver: ResizeObserver | null = null
+let placementFrame: number | null = null
 
 const panelVertical = computed(() => (resolvedPlacement.value.startsWith('top') ? 'top' : 'bottom'))
 
@@ -52,6 +54,18 @@ function removeRepositionListeners(): void {
 	}
 }
 
+function cancelPlacementFrame(): void {
+	if (placementFrame !== null) {
+		cancelAnimationFrame(placementFrame)
+		placementFrame = null
+	}
+}
+
+function removeResizeObserver(): void {
+	resizeObserver?.disconnect()
+	resizeObserver = null
+}
+
 function updatePlacement(): void {
 	const anchor = anchorRef.value
 	const panel = panelRef.value
@@ -68,6 +82,25 @@ function updatePlacement(): void {
 	placementReady.value = true
 }
 
+function schedulePlacement(): void {
+	cancelPlacementFrame()
+	nextTick(() => {
+		placementFrame = requestAnimationFrame(() => {
+			placementFrame = null
+			updatePlacement()
+		})
+	})
+}
+
+function addResizeObserver(): void {
+	removeResizeObserver()
+	const panel = panelRef.value
+	if (!panel) return
+
+	resizeObserver = new ResizeObserver(() => schedulePlacement())
+	resizeObserver.observe(panel)
+}
+
 function close(): void {
 	open.value = false
 }
@@ -82,7 +115,7 @@ function onEscape(e: KeyboardEvent): void {
 
 function addRepositionListeners(): void {
 	removeRepositionListeners()
-	repositionHandler = () => updatePlacement()
+	repositionHandler = () => schedulePlacement()
 	window.addEventListener('resize', repositionHandler)
 	window.addEventListener('scroll', repositionHandler, true)
 }
@@ -90,15 +123,18 @@ function addRepositionListeners(): void {
 watch(open, (isOpen) => {
 	removeDocClick()
 	removeRepositionListeners()
+	removeResizeObserver()
 
 	if (isOpen) {
 		placementReady.value = false
 		resolvedPlacement.value = `bottom-${props.align}` as DropdownPlacement
+		panelMinWidth.value = anchorRef.value?.getBoundingClientRect().width
 		document.addEventListener('keydown', onEscape)
 		addRepositionListeners()
 
+		schedulePlacement()
 		nextTick(() => {
-			updatePlacement()
+			addResizeObserver()
 			docClickHandler = (e: MouseEvent) => {
 				const target = e.target as Node
 				const insideRoot = root.value?.contains(target) ?? false
@@ -109,13 +145,18 @@ watch(open, (isOpen) => {
 		})
 	} else {
 		placementReady.value = false
+		panelMinWidth.value = undefined
+		panelTop.value = 0
+		panelLeft.value = 0
 		document.removeEventListener('keydown', onEscape)
 	}
 })
 
 onUnmounted(() => {
+	cancelPlacementFrame()
 	removeDocClick()
 	removeRepositionListeners()
+	removeResizeObserver()
 	document.removeEventListener('keydown', onEscape)
 })
 </script>
