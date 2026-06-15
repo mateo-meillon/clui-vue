@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onUnmounted, watch } from 'vue'
 import type { UiSize } from '../types'
 
 const props = withDefaults(
@@ -30,15 +31,31 @@ function onOverlayClick(): void {
 	if (!props.persistent) close()
 }
 
-function onKeydown(e: KeyboardEvent): void {
+function onEscape(e: KeyboardEvent): void {
 	if (e.key === 'Escape' && !props.persistent) close()
 }
+
+watch(
+	() => props.modelValue,
+	(isOpen) => {
+		if (isOpen) {
+			document.addEventListener('keydown', onEscape)
+		} else {
+			document.removeEventListener('keydown', onEscape)
+		}
+	},
+	{ immediate: true },
+)
+
+onUnmounted(() => {
+	document.removeEventListener('keydown', onEscape)
+})
 </script>
 
 <template>
 	<Teleport to="body">
 		<Transition name="ui-modal">
-			<div v-if="modelValue" class="ui-modal-overlay" @click.self="onOverlayClick" @keydown="onKeydown">
+			<div v-if="modelValue" class="ui-modal-overlay" @click.self="onOverlayClick">
 				<div class="ui-modal" :class="[`ui-modal--${size}`]" role="dialog" aria-modal="true" tabindex="-1">
 					<header v-if="title || $slots.header" class="ui-modal__header">
 						<slot name="header">
