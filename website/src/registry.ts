@@ -108,6 +108,13 @@ export const galleryRegistry: GalleryEntry[] = [
 		preview: () => import('./previews/Tabs.preview.vue'),
 	},
 	{
+		slug: 'switch',
+		title: 'Switch',
+		shortDescription: 'Toggle on/off with loading state.',
+		playground: () => import('./playgrounds/Switch.playground.vue'),
+		preview: () => import('./previews/Switch.preview.vue'),
+	},
+	{
 		slug: 'table',
 		title: 'Table',
 		shortDescription: 'Table wrapper and density.',

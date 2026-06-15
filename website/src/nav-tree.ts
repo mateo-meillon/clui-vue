@@ -17,6 +17,7 @@ const playgroundIcons: Record<string, IconName> = {
 	toast: 'notifications',
 	'route-progress': 'linear_scale',
 	icon: 'palette',
+	switch: 'toggle_on',
 	tabs: 'tabs',
 	table: 'table_chart',
 }
