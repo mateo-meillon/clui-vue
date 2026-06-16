@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useSlots, type Slots } from 'vue'
+import { Comment, Fragment, Text, computed, useSlots, type Slots, type VNode } from 'vue'
 import type { IconName, UiSize, UiVariant } from '../types'
 
 const props = withDefaults(
@@ -38,8 +38,34 @@ defineEmits<{
 }>()
 
 const slots: Slots = useSlots()
-const iconOnly = computed<boolean>(() => !!props.icon && !slots.default)
-const withIconLabel = computed<boolean>(() => !!props.icon && !!slots.default)
+
+function slotHasRenderableContent(): boolean {
+	if (!slots.default) {
+		return false
+	}
+
+	const hasContent = (nodes: VNode[]): boolean =>
+		nodes.some((node) => {
+			if (node.type === Comment) {
+				return false
+			}
+
+			if (node.type === Text) {
+				return String(node.children ?? '').trim().length > 0
+			}
+
+			if (node.type === Fragment && Array.isArray(node.children)) {
+				return hasContent(node.children as VNode[])
+			}
+
+			return true
+		})
+
+	return hasContent(slots.default())
+}
+
+const iconOnly = computed<boolean>(() => !!props.icon && !slotHasRenderableContent())
+const withIconLabel = computed<boolean>(() => !!props.icon && slotHasRenderableContent())
 
 const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
 
