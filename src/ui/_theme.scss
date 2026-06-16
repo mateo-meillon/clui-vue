@@ -33,6 +33,10 @@
 	--color-input-text: #{$color-gray-900};
 	--color-input-placeholder: #{$color-gray-400};
 
+	--color-input-ghost-bg: transparent;
+	--color-input-ghost-bg-hover: #{$color-gray-200};
+	--color-input-ghost-border: transparent;
+
 	--color-scrollbar-thumb: #{$color-gray-300};
 	--color-scrollbar-thumb-hover: #{$color-gray-400};
 	--color-scrollbar-track: transparent;
@@ -111,6 +115,10 @@
 	--color-input-text: #{$color-gray-50};
 	--color-input-placeholder: #{$color-gray-500};
 
+	--color-input-ghost-bg: transparent;
+	--color-input-ghost-bg-hover: #{$color-gray-800};
+	--color-input-ghost-border: transparent;
+
 	--color-scrollbar-thumb: #{$color-gray-700};
 	--color-scrollbar-thumb-hover: #{$color-gray-600};
 	--color-scrollbar-track: transparent;
@@ -149,6 +157,10 @@
 	--color-input-text: #f8fafc;
 	--color-input-placeholder: #64748b;
 
+	--color-input-ghost-bg: transparent;
+	--color-input-ghost-bg-hover: #1f2937;
+	--color-input-ghost-border: transparent;
+
 	--color-scrollbar-thumb: #334155;
 	--color-scrollbar-thumb-hover: #475569;
 	--color-shadow: rgba(0, 0, 0, 0.35);
@@ -179,6 +191,10 @@
 	--color-input-border: #262626;
 	--color-input-text: #ffffff;
 	--color-input-placeholder: #a3a3a3;
+
+	--color-input-ghost-bg: transparent;
+	--color-input-ghost-bg-hover: #171717;
+	--color-input-ghost-border: transparent;
 
 	--color-scrollbar-thumb: #262626;
 	--color-scrollbar-thumb-hover: #404040;
@@ -216,6 +232,10 @@
 	--color-input-border-focus: var(--color-primary);
 	--color-input-text: #{$color-gray-50};
 	--color-input-placeholder: #{$color-gray-500};
+
+	--color-input-ghost-bg: transparent;
+	--color-input-ghost-bg-hover: #{$color-gray-800};
+	--color-input-ghost-border: transparent;
 
 	--color-scrollbar-thumb: #{$color-gray-700};
 	--color-scrollbar-thumb-hover: #{$color-gray-600};

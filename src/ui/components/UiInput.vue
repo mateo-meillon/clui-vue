@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { IconName, UiSize } from '../types'
+import type { IconName, UiInputVariant, UiSize } from '../types'
 
 const props = withDefaults(
 	defineProps<{
@@ -8,6 +8,7 @@ const props = withDefaults(
 		type?: 'text' | 'password' | 'email' | 'number' | 'url'
 		placeholder?: string
 		size?: UiSize
+		variant?: UiInputVariant
 		disabled?: boolean
 		icon?: IconName
 		clearable?: boolean
@@ -19,6 +20,7 @@ const props = withDefaults(
 		type: 'text',
 		placeholder: undefined,
 		size: 'md',
+		variant: 'default',
 		disabled: false,
 		icon: undefined,
 		clearable: false,
@@ -45,7 +47,7 @@ function onClear(): void {
 </script>
 
 <template>
-	<div class="ui-input" :class="[`ui-input--${size}`, { 'ui-input--has-icon': !!icon, 'ui-input--has-clear': showClear }]">
+	<div class="ui-input" :class="[`ui-input--${size}`, `ui-input--${variant}`, { 'ui-input--has-icon': !!icon, 'ui-input--has-clear': showClear }]">
 		<UiIcon v-if="icon" class="ui-input__icon" :name="icon" :size="18" />
 		<input class="ui-input__control" :type="type" :value="modelValue" :placeholder="placeholder" :disabled="disabled" @input="onInput" />
 		<button v-if="showClear" class="ui-input__clear" type="button" :aria-label="clearAriaLabel" @click="onClear">
@@ -68,6 +70,7 @@ function onClear(): void {
 	align-items: center;
 	gap: $space-2;
 	transition:
+		background-color $duration-fast $easing-default,
 		border-color $duration-fast $easing-default,
 		box-shadow $duration-fast $easing-default;
 	box-shadow: 0 0 0 0 transparent;
@@ -106,6 +109,20 @@ function onClear(): void {
 		font-size: $text-md;
 		border-radius: $radius-md;
 		height: 44px;
+	}
+
+	&--ghost {
+		background: var(--color-input-ghost-bg);
+		border-color: var(--color-input-ghost-border);
+
+		&:hover:not(:focus-within) {
+			background: var(--color-input-ghost-bg-hover);
+		}
+
+		&:focus-within {
+			border-color: var(--color-input-border-focus);
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+		}
 	}
 }
 

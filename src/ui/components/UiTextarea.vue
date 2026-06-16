@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UiSize } from '../types'
+import type { UiInputVariant, UiSize } from '../types'
 
 const props = withDefaults(
 	defineProps<{
@@ -7,6 +7,7 @@ const props = withDefaults(
 		placeholder?: string
 		rows?: number
 		size?: UiSize
+		variant?: UiInputVariant
 		disabled?: boolean
 	}>(),
 	{
@@ -14,6 +15,7 @@ const props = withDefaults(
 		placeholder: undefined,
 		rows: 4,
 		size: 'md',
+		variant: 'default',
 		disabled: false,
 	},
 )
@@ -28,7 +30,15 @@ function onInput(ev: Event): void {
 </script>
 
 <template>
-	<textarea class="ui-textarea" :class="[`ui-textarea--${size}`]" :value="modelValue" :placeholder="placeholder" :rows="rows" :disabled="disabled" @input="onInput" />
+	<textarea
+		class="ui-textarea"
+		:class="[`ui-textarea--${size}`, `ui-textarea--${variant}`]"
+		:value="modelValue"
+		:placeholder="placeholder"
+		:rows="rows"
+		:disabled="disabled"
+		@input="onInput"
+	/>
 </template>
 
 <style scoped lang="scss">
@@ -44,6 +54,7 @@ function onInput(ev: Event): void {
 	outline: none;
 	resize: vertical;
 	transition:
+		background-color $duration-fast $easing-default,
 		border-color $duration-fast $easing-default,
 		box-shadow $duration-fast $easing-default;
 	box-shadow: 0 0 0 0 transparent;
@@ -78,6 +89,20 @@ function onInput(ev: Event): void {
 		font-size: $text-md;
 		border-radius: $radius-md;
 		padding: $space-4;
+	}
+
+	&--ghost {
+		background: var(--color-input-ghost-bg);
+		border-color: var(--color-input-ghost-border);
+
+		&:hover:not(:focus) {
+			background: var(--color-input-ghost-bg-hover);
+		}
+
+		&:focus {
+			border-color: var(--color-input-border-focus);
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+		}
 	}
 }
 </style>

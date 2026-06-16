@@ -7,6 +7,8 @@ const exLg = ref('Large')
 const exIcon = ref('Search…')
 const exPwd = ref('')
 const exDisabled = ref('Read-only')
+const exGhostSubject = ref('Quarterly update')
+const exGhostContent = ref('Hi team,\n\nHere is the summary for this quarter.')
 </script>
 
 <template>
@@ -37,6 +39,13 @@ const exDisabled = ref('Read-only')
 				<UiInput v-model="exDisabled" disabled placeholder="Disabled" />
 			</div>
 		</div>
+		<div class="group">
+			<p class="label">Ghost</p>
+			<div class="ghost-panel">
+				<UiInput v-model="exGhostSubject" variant="ghost" placeholder="Subject" />
+				<UiTextarea v-model="exGhostContent" variant="ghost" :rows="3" placeholder="Write your email…" />
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -49,5 +58,15 @@ const exDisabled = ref('Read-only')
 	:deep(.ui-input) {
 		min-width: min(100%, 12rem);
 	}
+}
+
+.ghost-panel {
+	display: flex;
+	flex-direction: column;
+	gap: $space-2;
+	padding: $space-3;
+	border: 1px solid var(--color-border);
+	border-radius: $radius-md;
+	background: var(--color-bg-surface);
 }
 </style>

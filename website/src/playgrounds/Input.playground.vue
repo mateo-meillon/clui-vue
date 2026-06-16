@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import type { IconName, SelectOption, UiSize } from 'clui-vue'
+import type { IconName, SelectOption, UiInputVariant, UiSize } from 'clui-vue'
 import HighlightedCode from '../components/HighlightedCode.vue'
 import PlaygroundPage from '../components/PlaygroundPage.vue'
 import InputExamples from './examples/Input.examples.vue'
@@ -10,6 +10,7 @@ const modelValue = ref('Hello')
 const type = ref<'text' | 'password' | 'email' | 'number' | 'url'>('text')
 const placeholder = ref('Type…')
 const size = ref<Extract<UiSize, 'sm' | 'md' | 'lg'>>('md')
+const variant = ref<UiInputVariant>('default')
 const disabled = ref(false)
 const clearable = ref(true)
 const clearAriaLabel = ref('Clear')
@@ -26,6 +27,10 @@ const sizeOptions: SelectOption[] = [
 	{ label: 'sm', value: 'sm' },
 	{ label: 'md', value: 'md' },
 	{ label: 'lg', value: 'lg' },
+]
+const variantOptions: SelectOption[] = [
+	{ label: 'default', value: 'default' },
+	{ label: 'ghost', value: 'ghost' },
 ]
 const demoIcons: IconName[] = ['search', 'settings', 'close', 'add']
 const iconOptions: SelectOption[] = [{ label: '(none)', value: 'none' }, ...demoIcons.map((n) => ({ label: n, value: n }))]
@@ -51,6 +56,7 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 					:type="type"
 					:placeholder="placeholder || undefined"
 					:size="size"
+					:variant="variant"
 					:disabled="disabled"
 					:icon="iconProp"
 					:clearable="clearable"
@@ -64,6 +70,9 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 			</UiFormField>
 			<UiFormField label="size">
 				<UiSelect v-model="size" :options="sizeOptions" size="sm" />
+			</UiFormField>
+			<UiFormField label="variant">
+				<UiSelect v-model="variant" :options="variantOptions" size="sm" />
 			</UiFormField>
 			<UiFormField label="placeholder">
 				<UiInput v-model="placeholder" type="text" size="sm" />
