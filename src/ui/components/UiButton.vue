@@ -39,6 +39,7 @@ defineEmits<{
 
 const slots: Slots = useSlots()
 const iconOnly = computed<boolean>(() => !!props.icon && !slots.default)
+const withIconLabel = computed<boolean>(() => !!props.icon && !!slots.default)
 
 const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
 
@@ -62,6 +63,7 @@ const anchorRel = computed(() => {
 				'ui-button--block': block,
 				'ui-button--rounded': rounded,
 				'ui-button--icon-only': iconOnly,
+				'ui-button--with-icon-label': withIconLabel,
 				'ui-button--align-start': align === 'start',
 				'ui-button--align-end': align === 'end',
 				'ui-button--active': active,
@@ -75,7 +77,8 @@ const anchorRel = computed(() => {
 	>
 		<span v-if="loading" class="ui-button__spinner" />
 		<UiIcon v-else-if="icon" :name="icon" :size="18" />
-		<slot />
+		<span v-if="withIconLabel" class="ui-button__label"><slot /></span>
+		<slot v-else />
 	</component>
 </template>
 
@@ -239,6 +242,41 @@ const anchorRel = computed(() => {
 		&.ui-button--auto {
 			width: 36px;
 		}
+	}
+
+	&--with-icon-label {
+		:deep(.ui-icon) {
+			flex-shrink: 0;
+		}
+
+		&.ui-button--rounded.ui-button--md {
+			padding-inline: $space-3;
+		}
+	}
+
+	&__label {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 1;
+		min-width: 0;
+	}
+
+	&--sm &__label {
+		height: 18px;
+	}
+
+	&--md &__label {
+		height: 18px;
+	}
+
+	&--lg &__label {
+		height: 20px;
+	}
+
+	&--auto &__label {
+		min-height: 18px;
+		height: auto;
 	}
 
 	&__spinner {
