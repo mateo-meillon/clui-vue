@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Comment, Fragment, Text, computed, useSlots, type Slots, type VNode } from 'vue'
+import { Comment, Fragment, Text, computed, onBeforeUpdate, onUpdated, ref, useSlots, type Slots, type VNode } from 'vue'
 import type { IconName, UiSize, UiVariant } from '../types'
 
 const props = withDefaults(
@@ -64,8 +64,17 @@ function slotHasRenderableContent(): boolean {
 	return hasContent(slots.default())
 }
 
-const iconOnly = computed<boolean>(() => !!props.icon && !slotHasRenderableContent())
-const withIconLabel = computed<boolean>(() => !!props.icon && slotHasRenderableContent())
+const hasDefaultSlotContent = ref(slotHasRenderableContent())
+
+function syncDefaultSlotContent(): void {
+	hasDefaultSlotContent.value = slotHasRenderableContent()
+}
+
+onBeforeUpdate(syncDefaultSlotContent)
+onUpdated(syncDefaultSlotContent)
+
+const iconOnly = computed<boolean>(() => !!props.icon && !hasDefaultSlotContent.value)
+const withIconLabel = computed<boolean>(() => !!props.icon && hasDefaultSlotContent.value)
 
 const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
 
