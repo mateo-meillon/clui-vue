@@ -191,7 +191,7 @@ onUnmounted(() => {
 
 .ui-dropdown__panel {
 	position: fixed;
-	z-index: 6000;
+	z-index: 10100;
 	min-width: 11rem;
 	padding: $space-1;
 	background: var(--color-bg-surface);

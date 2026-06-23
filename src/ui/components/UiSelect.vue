@@ -205,7 +205,7 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 	left: 0;
 	right: 0;
 	// Must float above app content (e.g., editors with their own stacking contexts).
-	z-index: 6000;
+	z-index: 10100;
 	padding: $space-1;
 	background: var(--color-bg-surface);
 	border: 1px solid var(--color-border);
