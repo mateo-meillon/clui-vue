@@ -47,6 +47,22 @@
 				<UiButton variant="secondary" block>Full width</UiButton>
 			</div>
 		</div>
+		<div class="group">
+			<p class="label">Tone (muted)</p>
+			<div class="row">
+				<UiButton variant="secondary" tone="muted" icon="search">Search…</UiButton>
+				<UiButton variant="ghost" tone="muted" icon="tune">Filters</UiButton>
+			</div>
+		</div>
+		<div class="group">
+			<p class="label">Stacked layout (card tile)</p>
+			<div class="row">
+				<UiButton variant="secondary" layout="stack" fill multiline icon="add" class="tile">
+					<span class="tile__title">Create</span>
+					<span class="tile__desc">Start a new item from scratch</span>
+				</UiButton>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -55,5 +71,18 @@
 
 .block-sample {
 	width: min(100%, 14rem);
+}
+
+.tile {
+	width: min(100%, 14rem);
+
+	.tile__title {
+		font-weight: 600;
+	}
+
+	.tile__desc {
+		font-size: $text-xs;
+		color: var(--color-text-secondary);
+	}
 }
 </style>

@@ -11,6 +11,17 @@ import CluiVue from 'clui-vue'
 
 createApp(App).use(CluiVue).mount('#app')`
 
+const defaultsCode = `import CluiVue from 'clui-vue'
+
+// Set library-wide prop defaults once.
+app.use(CluiVue, {
+  defaults: {
+    button: { rounded: true },
+    input: { size: 'sm' },
+    table: { density: 'compact' },
+  },
+})`
+
 const themeComposableCode = `import { useTheme } from 'clui-vue'
 
 const { theme, toggleTheme } = useTheme()`
@@ -54,6 +65,22 @@ const { theme, toggleTheme } = useTheme()`
 				<UiCard padding="md">
 					<div class="step-head">
 						<span class="step-num" aria-hidden="true">3</span>
+						<UiIcon name="tune" class="step-icon" :size="18" aria-hidden="true" />
+						<h2 class="step-title">Set global defaults (optional)</h2>
+					</div>
+					<p class="step-copy">
+						Pass a <code>defaults</code> map to the plugin to set library-wide prop defaults — e.g. make every <code>UiButton</code> rounded. Resolution order is
+						<strong>explicit prop &gt; injected default &gt; component built-in</strong>, so per-instance props always win. Use <code>createCluiConfig()</code> for a typed config object and
+						<code>provideCluiConfig()</code> to scope defaults to a subtree.
+					</p>
+					<HighlightedCode class="step-code" :code="defaultsCode" lang="typescript" />
+				</UiCard>
+			</li>
+
+			<li class="step">
+				<UiCard padding="md">
+					<div class="step-head">
+						<span class="step-num" aria-hidden="true">4</span>
 						<UiIcon name="palette" class="step-icon" :size="18" aria-hidden="true" />
 						<h2 class="step-title">Styles and themes</h2>
 					</div>

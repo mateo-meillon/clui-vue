@@ -91,7 +91,7 @@ onUnmounted(() => {
 
 	&.desktop {
 		width: 18rem;
-		padding: $space-5 $space-3 $space-5 $space-2;
+		padding: calc(var(--bar-h, 0px) + #{$space-5}) $space-3 $space-5 $space-2;
 		border-right: 1px solid var(--color-border);
 		background: var(--color-bg-surface);
 		overflow-x: hidden;

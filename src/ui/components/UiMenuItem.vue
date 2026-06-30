@@ -24,6 +24,7 @@ function onClick(event: MouseEvent): void {
 <template>
 	<button
 		type="button"
+		v-wave
 		class="ui-menu-item"
 		:class="{ 'ui-menu-item--active': active, 'ui-menu-item--selected': selected }"
 		:role="radio ? 'menuitemradio' : 'menuitem'"
@@ -55,6 +56,8 @@ function onClick(event: MouseEvent): void {
 	color: var(--color-text);
 	text-align: left;
 	cursor: pointer;
+	position: relative;
+	overflow: hidden;
 	transition: background $duration-fast $easing-default;
 
 	&:hover {

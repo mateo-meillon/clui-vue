@@ -42,6 +42,7 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 	<PlaygroundPage title="Input">
 		<template #explain>
 			<p>Single-line text control with optional leading icon and optional clear button. Value is a string <code>v-model</code> even for <code>type="number"</code>.</p>
+			<p>Exposes imperative <code>focus()</code>, <code>select()</code>, and <code>blur()</code> methods via a template ref for programmatic focus management.</p>
 		</template>
 		<template #examples>
 			<InputExamples />

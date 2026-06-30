@@ -17,11 +17,25 @@ export const galleryRegistry: GalleryEntry[] = [
 		preview: () => import('./previews/Button.preview.vue'),
 	},
 	{
+		slug: 'button-group',
+		title: 'Button group',
+		shortDescription: 'Pill and segmented button clusters.',
+		playground: () => import('./playgrounds/ButtonGroup.playground.vue'),
+		preview: () => import('./previews/ButtonGroup.preview.vue'),
+	},
+	{
 		slug: 'input',
 		title: 'Input',
 		shortDescription: 'Text fields with optional icon and clear.',
 		playground: () => import('./playgrounds/Input.playground.vue'),
 		preview: () => import('./previews/Input.preview.vue'),
+	},
+	{
+		slug: 'textarea',
+		title: 'Textarea',
+		shortDescription: 'Multi-line input with auto-resize.',
+		playground: () => import('./playgrounds/Textarea.playground.vue'),
+		preview: () => import('./previews/Textarea.preview.vue'),
 	},
 	{
 		slug: 'form-field',
@@ -59,6 +73,13 @@ export const galleryRegistry: GalleryEntry[] = [
 		preview: () => import('./previews/Dropdown.preview.vue'),
 	},
 	{
+		slug: 'menu',
+		title: 'Menu',
+		shortDescription: 'Menu list and items for dropdowns.',
+		playground: () => import('./playgrounds/Menu.playground.vue'),
+		preview: () => import('./previews/Menu.preview.vue'),
+	},
+	{
 		slug: 'modal',
 		title: 'Modal',
 		shortDescription: 'Dialog overlay with slots.',
@@ -78,6 +99,13 @@ export const galleryRegistry: GalleryEntry[] = [
 		shortDescription: 'Expandable navigation-style lists.',
 		playground: () => import('./playgrounds/Tree.playground.vue'),
 		preview: () => import('./previews/Tree.preview.vue'),
+	},
+	{
+		slug: 'breadcrumbs',
+		title: 'Breadcrumbs',
+		shortDescription: 'Navigation trail with collapse.',
+		playground: () => import('./playgrounds/Breadcrumbs.playground.vue'),
+		preview: () => import('./previews/Breadcrumbs.preview.vue'),
 	},
 	{
 		slug: 'toast',

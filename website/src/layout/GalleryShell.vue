@@ -60,8 +60,11 @@ const headerHidden = ref(false)
 const headerHeightPx = ref(0)
 const lastScrollTop = ref(0)
 const reduceMotion = ref(false)
+const isMobile = ref(false)
 
 let barResizeObserver: ResizeObserver | null = null
+let mobileMql: MediaQueryList | null = null
+let mobileMqlCleanup: (() => void) | null = null
 
 function measureBar(): void {
 	const el = barEl.value
@@ -69,7 +72,8 @@ function measureBar(): void {
 }
 
 function onMainScroll(ev: Event): void {
-	if (reduceMotion.value) return
+	// Hide-on-scroll is a mobile-only affordance; the bar stays pinned on desktop.
+	if (reduceMotion.value || !isMobile.value) return
 	const el = ev.target as HTMLElement
 	const st = Math.max(0, el.scrollTop)
 	const delta = st - lastScrollTop.value
@@ -98,6 +102,17 @@ watch(
 
 onMounted(() => {
 	reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+	mobileMql = window.matchMedia('(max-width: 720px)')
+	isMobile.value = mobileMql.matches
+	const onMobileChange = (e: MediaQueryListEvent): void => {
+		isMobile.value = e.matches
+		// Leaving mobile must never leave the bar hidden.
+		if (!e.matches) headerHidden.value = false
+	}
+	mobileMql.addEventListener('change', onMobileChange)
+	mobileMqlCleanup = () => mobileMql?.removeEventListener('change', onMobileChange)
+
 	nextTick(() => {
 		measureBar()
 		const bar = barEl.value
@@ -111,6 +126,8 @@ onMounted(() => {
 onUnmounted(() => {
 	barResizeObserver?.disconnect()
 	barResizeObserver = null
+	mobileMqlCleanup?.()
+	mobileMqlCleanup = null
 })
 </script>
 
@@ -119,7 +136,7 @@ onUnmounted(() => {
 		<UiToastHost />
 		<UiRouteProgress :active="routeProgressActive" />
 
-		<div class="gallery">
+		<div class="gallery" :style="{ '--bar-h': `${headerHeightPx}px` }">
 			<header ref="barEl" class="bar" :class="{ 'bar--hidden': headerHidden }" :aria-hidden="headerHidden">
 				<div class="start">
 					<span class="menu">
@@ -163,10 +180,10 @@ onUnmounted(() => {
 				</div>
 			</header>
 
-			<div class="frame" :style="{ paddingTop: `${headerHeightPx}px` }">
+			<div class="frame">
 				<GalleryNav v-model:open="galleryNavOpen" />
 
-				<main ref="mainEl" class="main" @scroll.passive="onMainScroll" :style="{ paddingTop: '24px' }">
+				<main ref="mainEl" class="main" @scroll.passive="onMainScroll">
 					<RouterView />
 				</main>
 			</div>
@@ -308,6 +325,7 @@ onUnmounted(() => {
 			min-height: 0;
 			overflow-y: auto;
 			scroll-behavior: smooth;
+			padding-top: calc(var(--bar-h, 0px) + #{$space-7});
 			padding-inline: calc(#{$space-6} + env(safe-area-inset-left, 0px)) calc(#{$space-6} + env(safe-area-inset-right, 0px));
 			padding-bottom: calc(#{$space-8} + env(safe-area-inset-bottom, 0px));
 		}

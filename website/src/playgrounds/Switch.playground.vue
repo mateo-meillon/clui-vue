@@ -11,10 +11,17 @@ const disabled = ref(false)
 const loading = ref(false)
 const size = ref<Extract<UiSize, 'sm' | 'md'>>('md')
 const showLabels = ref(false)
+const label = ref('Notifications')
+const description = ref('Send me product updates')
+const labelPosition = ref<'start' | 'end'>('start')
 
 const sizeOptions: SelectOption[] = [
 	{ label: 'sm', value: 'sm' },
 	{ label: 'md', value: 'md' },
+]
+const labelPositionOptions: SelectOption[] = [
+	{ label: 'start', value: 'start' },
+	{ label: 'end', value: 'end' },
 ]
 </script>
 
@@ -25,6 +32,7 @@ const sizeOptions: SelectOption[] = [
 				Toggle control with <code>v-model</code> (boolean). Supports <code>disabled</code>, <code>loading</code>, and optional <code>#checked</code> / <code>#unchecked</code> slots
 				for inline labels.
 			</p>
+			<p>Pass <code>label</code> (and optional <code>description</code>) to render a clickable labelled row; use <code>labelPosition</code> to place the control before or after the text.</p>
 		</template>
 		<template #examples>
 			<SwitchExamples />
@@ -34,7 +42,15 @@ const sizeOptions: SelectOption[] = [
 		</template>
 		<template #demo>
 			<div class="demo">
-				<UiSwitch v-model="enabled" :disabled="disabled" :loading="loading" :size="size">
+				<UiSwitch
+					v-model="enabled"
+					:disabled="disabled"
+					:loading="loading"
+					:size="size"
+					:label="label || undefined"
+					:description="description || undefined"
+					:label-position="labelPosition"
+				>
 					<template v-if="showLabels" #checked>ON</template>
 					<template v-if="showLabels" #unchecked>OFF</template>
 				</UiSwitch>
@@ -45,7 +61,16 @@ const sizeOptions: SelectOption[] = [
 			<UiFormField label="size">
 				<UiSelect v-model="size" :options="sizeOptions" size="sm" />
 			</UiFormField>
-			<label class="chk"><input v-model="showLabels" type="checkbox" /> show labels</label>
+			<UiFormField label="label">
+				<UiInput v-model="label" type="text" size="sm" />
+			</UiFormField>
+			<UiFormField label="description">
+				<UiInput v-model="description" type="text" size="sm" />
+			</UiFormField>
+			<UiFormField label="labelPosition">
+				<UiSelect v-model="labelPosition" :options="labelPositionOptions" size="sm" />
+			</UiFormField>
+			<label class="chk"><input v-model="showLabels" type="checkbox" /> inline on/off labels</label>
 			<label class="chk"><input v-model="disabled" type="checkbox" /> disabled</label>
 			<label class="chk"><input v-model="loading" type="checkbox" /> loading</label>
 		</template>

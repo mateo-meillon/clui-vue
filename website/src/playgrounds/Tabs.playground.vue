@@ -11,6 +11,7 @@ const tabB = ref('Bravo')
 const tabC = ref('Charlie')
 const modelValue = ref('a')
 const ariaLabel = ref('Demo tabs')
+const showPanels = ref(true)
 
 const items = computed<UiTabItem[]>(() => [
 	{ id: 'a', label: tabA.value },
@@ -29,6 +30,7 @@ const tabOptions: SelectOption[] = [
 	<PlaygroundPage title="Tabs">
 		<template #explain>
 			<p>Accessible tablist with one named slot per tab id. Bind <code>modelValue</code> to the active tab id and pass <code>items</code> metadata for labels.</p>
+			<p>Set <code>:panels="false"</code> for a headless tab-bar (strip only) — it renders just the accessible tablist and emits the active id, with no panel container.</p>
 		</template>
 		<template #examples>
 			<TabsExamples />
@@ -37,7 +39,7 @@ const tabOptions: SelectOption[] = [
 			<HighlightedCode :code="tabsExamplesRaw" />
 		</template>
 		<template #demo>
-			<UiTabs v-model="modelValue" :items="items" :aria-label="ariaLabel || undefined">
+			<UiTabs v-model="modelValue" :items="items" :panels="showPanels" :aria-label="ariaLabel || undefined">
 				<template #a>
 					<p class="panel">Panel <strong>A</strong></p>
 				</template>
@@ -48,6 +50,7 @@ const tabOptions: SelectOption[] = [
 					<p class="panel">Panel <strong>C</strong></p>
 				</template>
 			</UiTabs>
+			<p v-if="!showPanels" class="headless-note">Headless: active id is <code>{{ modelValue }}</code></p>
 		</template>
 		<template #controls>
 			<UiFormField label="modelValue">
@@ -65,11 +68,13 @@ const tabOptions: SelectOption[] = [
 			<UiFormField label="items[2].label">
 				<UiInput v-model="tabC" type="text" size="sm" />
 			</UiFormField>
+			<label class="chk"><input v-model="showPanels" type="checkbox" /> render panels</label>
 		</template>
 	</PlaygroundPage>
 </template>
 
 <style scoped lang="scss">
+@use '../styles/website' as site;
 @use 'clui-vue/tokens' as *;
 
 .panel {
@@ -78,5 +83,15 @@ const tabOptions: SelectOption[] = [
 	font-size: $text-sm;
 	color: var(--color-text-secondary);
 	line-height: 1.5;
+}
+
+.headless-note {
+	margin: $space-3 0 0;
+	font-size: $text-sm;
+	color: var(--color-text-secondary);
+}
+
+.chk {
+	@include site.playground-checkbox-row;
 }
 </style>

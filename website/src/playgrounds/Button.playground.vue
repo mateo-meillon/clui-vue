@@ -14,6 +14,9 @@ const rounded = ref(false)
 const active = ref(false)
 const loading = ref(false)
 const align = ref<'start' | 'center' | 'end'>('center')
+const layout = ref<'inline' | 'stack'>('inline')
+const tone = ref<'default' | 'muted'>('default')
+const multiline = ref(false)
 const iconChoice = ref<string>('none')
 const label = ref('Click me')
 
@@ -34,6 +37,14 @@ const alignOptions: SelectOption[] = [
 	{ label: 'Center', value: 'center' },
 	{ label: 'End', value: 'end' },
 ]
+const layoutOptions: SelectOption[] = [
+	{ label: 'inline', value: 'inline' },
+	{ label: 'stack', value: 'stack' },
+]
+const toneOptions: SelectOption[] = [
+	{ label: 'default', value: 'default' },
+	{ label: 'muted', value: 'muted' },
+]
 const demoIcons: IconName[] = ['add', 'search', 'settings', 'close', 'menu', 'check_circle']
 const iconOptions: SelectOption[] = [{ label: '(none)', value: 'none' }, ...demoIcons.map((n) => ({ label: n, value: n }))]
 
@@ -45,6 +56,11 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 		<template #explain>
 			<p>Primary actions, secondary actions, icon buttons, and loading state. Uses ripple (<code>v-wave</code>) when the host app registers it.</p>
 			<p>Icon-only buttons omit default slot content and set width from the icon.</p>
+			<p>
+				Also supports <code>layout="stack"</code> + <code>fill</code> for card tiles, <code>multiline</code> for wrapping labels, <code>tone="muted"</code> for low-emphasis text,
+				<code>indent</code> for nav rows, and <code>iconSize</code>/<code>iconClass</code> to size or animate the icon. The default slot is scoped with <code>{ active }</code>, and the
+				active state exposes <code>--ui-button-content-color</code> so slotted icons recolor automatically.
+			</p>
 		</template>
 		<template #examples>
 			<ButtonExamples />
@@ -54,7 +70,20 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 		</template>
 		<template #demo>
 			<div class="demo-row">
-				<UiButton :variant="variant" :size="size" :disabled="disabled" :block="block" :rounded="rounded" :active="active" :loading="loading" :align="align" :icon="iconProp">
+				<UiButton
+					:variant="variant"
+					:size="size"
+					:disabled="disabled"
+					:block="block"
+					:rounded="rounded"
+					:active="active"
+					:loading="loading"
+					:align="align"
+					:layout="layout"
+					:tone="tone"
+					:multiline="multiline"
+					:icon="iconProp"
+				>
 					{{ label || '\u00a0' }}
 				</UiButton>
 			</div>
@@ -69,6 +98,12 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 			<UiFormField label="align">
 				<UiSelect v-model="align" :options="alignOptions" size="sm" />
 			</UiFormField>
+			<UiFormField label="layout">
+				<UiSelect v-model="layout" :options="layoutOptions" size="sm" />
+			</UiFormField>
+			<UiFormField label="tone">
+				<UiSelect v-model="tone" :options="toneOptions" size="sm" />
+			</UiFormField>
 			<UiFormField label="icon">
 				<UiSelect v-model="iconChoice" :options="iconOptions" size="sm" />
 			</UiFormField>
@@ -78,6 +113,7 @@ const iconProp = computed(() => (iconChoice.value === 'none' ? undefined : (icon
 			<label class="chk"><input v-model="disabled" type="checkbox" /> disabled</label>
 			<label class="chk"><input v-model="block" type="checkbox" /> block</label>
 			<label class="chk"><input v-model="rounded" type="checkbox" /> rounded</label>
+			<label class="chk"><input v-model="multiline" type="checkbox" /> multiline</label>
 			<label class="chk"><input v-model="active" type="checkbox" /> active</label>
 			<label class="chk"><input v-model="loading" type="checkbox" /> loading</label>
 		</template>

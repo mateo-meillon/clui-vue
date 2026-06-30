@@ -33,6 +33,7 @@ const placementOptions: SelectOption[] = [
 	<PlaygroundPage title="Select">
 		<template #explain>
 			<p>Custom listbox triggered by a button-like control. Options are <code>{ label, value }</code> pairs; <code>modelValue</code> stores the selected value string.</p>
+			<p>The options panel teleports to <code>&lt;body&gt;</code> and auto-flips to fit the viewport, so it is never clipped by an ancestor's <code>overflow</code> (e.g. inside a modal). <code>placement</code> sets the preferred side.</p>
 		</template>
 		<template #examples>
 			<SelectExamples />
