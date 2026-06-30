@@ -62,11 +62,11 @@ function isRowActive(node: UiTreeNode): boolean {
 				block
 				align="start"
 				:active="isRowActive(node)"
+				:indent="8"
 				:class="{ 'ui-tree__row--expanded': !!node.children?.length && isExpanded(node.id) }"
 				:style="{
 					marginLeft: `${depth * 24}px`,
 					width: `calc(100% - ${depth * 24}px)`,
-					paddingLeft: '8px',
 				}"
 				type="button"
 				@click="onRowClick(node)"
@@ -126,7 +126,7 @@ function isRowActive(node: UiTreeNode): boolean {
 	width: 16px;
 	height: 16px;
 	flex-shrink: 0;
-	color: var(--color-text-secondary);
+	color: var(--ui-button-content-color, var(--color-text-secondary));
 	transition: transform $duration-fast $easing-default;
 
 	&--open {
@@ -149,15 +149,7 @@ function isRowActive(node: UiTreeNode): boolean {
 
 .ui-tree__icon {
 	flex-shrink: 0;
-	color: var(--color-text-secondary);
-}
-
-.ui-tree__node :deep(.ui-button--active) .ui-tree__icon {
-	color: currentColor;
-}
-
-.ui-tree__node :deep(.ui-button--active) .ui-tree__expand {
-	color: currentColor;
+	color: var(--ui-button-content-color, var(--color-text-secondary));
 }
 
 .ui-tree__label {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useDefaults } from '../config'
 import type { IconName, UiInputVariant, UiSize } from '../types'
 
 const props = withDefaults(
@@ -19,8 +20,8 @@ const props = withDefaults(
 		modelValue: '',
 		type: 'text',
 		placeholder: undefined,
-		size: 'md',
-		variant: 'default',
+		size: undefined,
+		variant: undefined,
 		disabled: false,
 		icon: undefined,
 		clearable: false,
@@ -33,6 +34,12 @@ const emit = defineEmits<{
 	clear: []
 }>()
 
+const config = useDefaults('input', props)
+const size = computed<UiSize>(() => config.value.size ?? 'md')
+const variant = computed<UiInputVariant>(() => config.value.variant ?? 'default')
+
+const inputRef = ref<HTMLInputElement | null>(null)
+
 const showClear = computed(() => props.clearable && !props.disabled && !!props.modelValue)
 
 function onInput(ev: Event): void {
@@ -44,12 +51,26 @@ function onClear(): void {
 	emit('update:modelValue', '')
 	emit('clear')
 }
+
+function focus(): void {
+	inputRef.value?.focus()
+}
+
+function select(): void {
+	inputRef.value?.select()
+}
+
+function blur(): void {
+	inputRef.value?.blur()
+}
+
+defineExpose({ focus, select, blur })
 </script>
 
 <template>
 	<div class="ui-input" :class="[`ui-input--${size}`, `ui-input--${variant}`, { 'ui-input--has-icon': !!icon, 'ui-input--has-clear': showClear }]">
 		<UiIcon v-if="icon" class="ui-input__icon" :name="icon" :size="18" />
-		<input class="ui-input__control" :type="type" :value="modelValue" :placeholder="placeholder" :disabled="disabled" @input="onInput" />
+		<input ref="inputRef" class="ui-input__control" :type="type" :value="modelValue" :placeholder="placeholder" :disabled="disabled" @input="onInput" />
 		<button v-if="showClear" class="ui-input__clear" type="button" :aria-label="clearAriaLabel" @click="onClear">
 			<UiIcon name="close" :size="16" />
 		</button>

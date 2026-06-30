@@ -205,7 +205,7 @@ onUnmounted(() => {
 
 .ui-tooltip__panel {
 	position: fixed;
-	z-index: 6500;
+	z-index: $z-tooltip;
 	padding: $space-2 $space-3;
 	background: var(--color-tooltip-bg);
 	color: var(--color-tooltip-text);

@@ -23,3 +23,9 @@ export interface UiTabItem {
 	id: string
 	label: string
 }
+
+export interface UiBreadcrumbItem {
+	id: string
+	label: string
+	icon?: IconName
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Comment, Fragment, Text, computed, onBeforeUpdate, onUpdated, ref, useSlots, type Slots, type VNode } from 'vue'
+import { useDefaults } from '../config'
 import type { IconName, UiSize, UiVariant } from '../types'
 
 const props = withDefaults(
@@ -10,7 +11,25 @@ const props = withDefaults(
 		block?: boolean
 		rounded?: boolean
 		icon?: IconName
+		/** Icon size override; defaults to the per-size icon size. */
+		iconSize?: number | string
+		/** Extra class applied to the rendered icon (e.g. for animation). */
+		iconClass?: string
+		/** Text label, rendered when no default slot content is provided. */
+		label?: string
 		align?: 'start' | 'center' | 'end'
+		/** `stack` lays icon above label (card-style); `inline` is the default row. */
+		layout?: 'inline' | 'stack'
+		/** Stretch to fill the container height (card grids). */
+		fill?: boolean
+		/** Allow the label to wrap and the button to grow vertically. */
+		multiline?: boolean
+		/** Make the label a flexible, clipping region (title + trailing content rows). */
+		fluidLabel?: boolean
+		/** Text tone for ghost/secondary triggers. */
+		tone?: 'default' | 'muted'
+		/** Left gutter in px (nav tree / footer alignment). */
+		indent?: number
 		active?: boolean
 		loading?: boolean
 		href?: string
@@ -18,13 +37,22 @@ const props = withDefaults(
 		rel?: string
 	}>(),
 	{
-		variant: 'secondary',
-		size: 'md',
+		variant: undefined,
+		size: undefined,
 		disabled: false,
 		block: false,
-		rounded: false,
+		rounded: undefined,
 		icon: undefined,
+		iconSize: undefined,
+		iconClass: undefined,
+		label: undefined,
 		align: 'center',
+		layout: 'inline',
+		fill: false,
+		multiline: false,
+		fluidLabel: false,
+		tone: 'default',
+		indent: undefined,
 		active: false,
 		loading: false,
 		href: undefined,
@@ -36,6 +64,11 @@ const props = withDefaults(
 defineEmits<{
 	click: [event: MouseEvent]
 }>()
+
+const config = useDefaults('button', props)
+const variant = computed<UiVariant>(() => config.value.variant ?? 'secondary')
+const size = computed<UiSize>(() => config.value.size ?? 'md')
+const rounded = computed<boolean>(() => config.value.rounded ?? false)
 
 const slots: Slots = useSlots()
 
@@ -73,8 +106,11 @@ function syncDefaultSlotContent(): void {
 onBeforeUpdate(syncDefaultSlotContent)
 onUpdated(syncDefaultSlotContent)
 
-const iconOnly = computed<boolean>(() => !!props.icon && !hasDefaultSlotContent.value)
-const withIconLabel = computed<boolean>(() => !!props.icon && hasDefaultSlotContent.value)
+const hasLabelText = computed<boolean>(() => hasDefaultSlotContent.value || !!props.label)
+const iconOnly = computed<boolean>(() => !!props.icon && !hasLabelText.value)
+const withIconLabel = computed<boolean>(() => !!props.icon && hasLabelText.value)
+
+const resolvedIconSize = computed<number | string>(() => props.iconSize ?? 18)
 
 const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
 
@@ -83,6 +119,14 @@ const anchorRel = computed(() => {
 	if (props.rel !== undefined) return props.rel || undefined
 	if (props.target === '_blank') return 'noopener noreferrer'
 	return undefined
+})
+
+const inlineStyle = computed(() => {
+	const style: Record<string, string> = {}
+	if (props.indent !== undefined) {
+		style.paddingLeft = `${props.indent}px`
+	}
+	return style
 })
 </script>
 
@@ -101,9 +145,15 @@ const anchorRel = computed(() => {
 				'ui-button--with-icon-label': withIconLabel,
 				'ui-button--align-start': align === 'start',
 				'ui-button--align-end': align === 'end',
+				'ui-button--stack': layout === 'stack',
+				'ui-button--fill': fill,
+				'ui-button--multiline': multiline,
+				'ui-button--fluid-label': fluidLabel,
+				'ui-button--muted': tone === 'muted',
 				'ui-button--active': active,
 			},
 		]"
+		:style="inlineStyle"
 		:href="useAnchor ? href : undefined"
 		:target="useAnchor ? target : undefined"
 		:rel="useAnchor ? anchorRel : undefined"
@@ -111,9 +161,9 @@ const anchorRel = computed(() => {
 		@click="$emit('click', $event)"
 	>
 		<span v-if="loading" class="ui-button__spinner" />
-		<UiIcon v-else-if="icon" :name="icon" :size="18" />
-		<span v-if="withIconLabel" class="ui-button__label"><slot /></span>
-		<slot v-else />
+		<UiIcon v-else-if="icon" :name="icon" :size="resolvedIconSize" :class="iconClass" />
+		<span v-if="withIconLabel" class="ui-button__label"><slot :active="active">{{ label }}</slot></span>
+		<slot v-else :active="active">{{ label }}</slot>
 	</component>
 </template>
 
@@ -125,7 +175,7 @@ const anchorRel = computed(() => {
 	align-items: center;
 	justify-content: center;
 	gap: $space-2;
-	font-family: $font-sans;
+	font-family: inherit;
 	font-weight: 500;
 	border: none;
 	outline: none;
@@ -137,6 +187,8 @@ const anchorRel = computed(() => {
 		color $duration-normal $easing-default,
 		box-shadow $duration-normal $easing-default;
 	white-space: nowrap;
+	padding-inline: var(--ui-button-padding-inline, initial);
+	padding-block: var(--ui-button-padding-block, initial);
 
 	&:disabled {
 		opacity: 0.5;
@@ -242,9 +294,37 @@ const anchorRel = computed(() => {
 		justify-content: flex-end;
 	}
 
+	&--muted {
+		color: var(--color-text-secondary);
+	}
+
+	&--stack {
+		flex-direction: column;
+		align-items: stretch;
+		white-space: normal;
+		height: auto;
+	}
+
+	&--fill {
+		height: 100%;
+	}
+
+	&--multiline {
+		white-space: normal;
+		height: auto;
+		min-height: 36px;
+	}
+
+	&--fluid-label &__label {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+	}
+
 	&--active {
 		color: var(--color-primary);
 		background-color: color-mix(in srgb, var(--color-primary) 12%, transparent);
+		--ui-button-content-color: currentColor;
 
 		&:hover {
 			color: var(--color-primary-hover);
@@ -295,6 +375,12 @@ const anchorRel = computed(() => {
 		justify-content: center;
 		line-height: 1;
 		min-width: 0;
+	}
+
+	&--multiline &__label,
+	&--stack &__label {
+		height: auto;
+		white-space: normal;
 	}
 
 	&--sm &__label {

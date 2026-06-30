@@ -8,8 +8,10 @@ withDefaults(
 		items: UiTabItem[]
 		/** Accessible name for the tab strip (tablist). */
 		ariaLabel?: string
+		/** Render the tab panels; set `false` for a headless tab-bar (strip only). */
+		panels?: boolean
 	}>(),
-	{ ariaLabel: undefined },
+	{ ariaLabel: undefined, panels: true },
 )
 
 const emit = defineEmits<{
@@ -42,7 +44,7 @@ function selectTab(id: string): void {
 				{{ item.label }}
 			</button>
 		</div>
-		<div class="ui-tabs__panels">
+		<div v-if="panels" class="ui-tabs__panels">
 			<div
 				v-for="item in items"
 				:key="'panel-' + item.id"

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useDefaults } from '../config'
 import type { UiSize } from '../types'
 
 const props = withDefaults(
@@ -7,12 +9,20 @@ const props = withDefaults(
 		disabled?: boolean
 		loading?: boolean
 		size?: Extract<UiSize, 'sm' | 'md'>
+		/** Optional row label; renders a labelled, clickable row. */
+		label?: string
+		description?: string
+		/** Side the control sits on relative to the label. */
+		labelPosition?: 'start' | 'end'
 	}>(),
 	{
 		modelValue: false,
 		disabled: false,
 		loading: false,
-		size: 'md',
+		size: undefined,
+		label: undefined,
+		description: undefined,
+		labelPosition: 'start',
 	},
 )
 
@@ -20,6 +30,9 @@ const emit = defineEmits<{
 	'update:modelValue': [value: boolean]
 	change: [value: boolean]
 }>()
+
+const config = useDefaults('switch', props)
+const size = computed<Extract<UiSize, 'sm' | 'md'>>(() => config.value.size ?? 'md')
 
 function toggle(): void {
 	if (props.disabled || props.loading) return
@@ -30,7 +43,42 @@ function toggle(): void {
 </script>
 
 <template>
+	<label v-if="label || description || $slots.label" class="ui-switch-row" :class="[`ui-switch-row--${labelPosition}`, { 'ui-switch-row--disabled': disabled }]">
+		<span class="ui-switch-row__text">
+			<slot name="label">
+				<span v-if="label" class="ui-switch-row__label">{{ label }}</span>
+				<span v-if="description" class="ui-switch-row__description">{{ description }}</span>
+			</slot>
+		</span>
+		<button
+			type="button"
+			class="ui-switch"
+			:class="[
+				`ui-switch--${size}`,
+				{
+					'ui-switch--checked': modelValue,
+					'ui-switch--disabled': disabled,
+					'ui-switch--loading': loading,
+				},
+			]"
+			role="switch"
+			:aria-checked="modelValue"
+			:aria-disabled="disabled || loading"
+			:disabled="disabled || loading"
+			@click="toggle"
+		>
+			<span class="ui-switch__inner">
+				<slot v-if="modelValue" name="checked" />
+				<slot v-else name="unchecked" />
+			</span>
+			<span class="ui-switch__handle">
+				<span v-if="loading" class="ui-switch__spinner" />
+			</span>
+		</button>
+	</label>
+
 	<button
+		v-else
 		type="button"
 		class="ui-switch"
 		:class="[
@@ -59,6 +107,42 @@ function toggle(): void {
 
 <style scoped lang="scss">
 @use '../tokens' as *;
+
+.ui-switch-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: $space-3;
+	width: 100%;
+	cursor: pointer;
+
+	&--end {
+		flex-direction: row-reverse;
+		justify-content: flex-end;
+	}
+
+	&--disabled {
+		cursor: not-allowed;
+	}
+
+	&__text {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	&__label {
+		font-size: $text-sm;
+		font-weight: 500;
+		color: var(--color-text);
+	}
+
+	&__description {
+		font-size: $text-xs;
+		color: var(--color-text-secondary);
+	}
+}
 
 .ui-switch {
 	position: relative;

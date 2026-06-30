@@ -10,8 +10,12 @@
 	--color-bg: #{$color-gray-100};
 	--color-bg-surface: #{$color-white};
 	--color-text: #{$color-gray-900};
+	--color-text-primary: #{$color-gray-900};
 	--color-text-secondary: #{$color-gray-600};
+	--color-text-muted: #{$color-gray-400};
+	--color-text-danger: #c62828;
 	--color-border: #{$color-gray-200};
+	--color-border-subtle: #{color.mix($color-gray-200, $color-white, 60%)};
 
 	--color-btn-secondary-bg: #{color.mix($color-gray-200, $color-white, 60%)};
 	--color-btn-secondary-bg-hover: #{$color-gray-200};
@@ -92,8 +96,12 @@
 	--color-bg: #0a0a0a;
 	--color-bg-surface: #{$color-gray-900};
 	--color-text: #{$color-gray-50};
+	--color-text-primary: #{$color-gray-50};
 	--color-text-secondary: #{$color-gray-400};
+	--color-text-muted: #{$color-gray-500};
+	--color-text-danger: #f87171;
 	--color-border: #{$color-gray-800};
+	--color-border-subtle: #{$color-gray-800};
 
 	--color-btn-secondary-bg: #{$color-gray-800};
 	--color-btn-secondary-bg-hover: #{$color-gray-700};

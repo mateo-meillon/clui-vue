@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onUnmounted, ref, useId, watch } from 'vue'
+import { getDropdownPanelStyle, type DropdownPlacement } from '../dropdownPlacement'
+import { useDefaults } from '../config'
 import type { SelectOption, UiSize } from '../types'
 
 const props = withDefaults(
@@ -9,13 +11,13 @@ const props = withDefaults(
 		placeholder?: string
 		size?: UiSize
 		disabled?: boolean
-		/** Open the list above the trigger (e.g. footer controls near the window bottom). */
+		/** Preferred side; auto-flips to fit the viewport. */
 		placement?: 'bottom' | 'top'
 	}>(),
 	{
 		modelValue: '',
 		placeholder: undefined,
-		size: 'md',
+		size: undefined,
 		disabled: false,
 		placement: 'bottom',
 	},
@@ -25,20 +27,114 @@ const emit = defineEmits<{
 	'update:modelValue': [value: string]
 }>()
 
+const config = useDefaults('select', props)
+const size = computed(() => config.value.size ?? 'md')
+
+/** Matches $space-2 in tokens */
+const PANEL_GAP = 6
+
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
+const triggerRef = ref<HTMLElement | null>(null)
+const panelRef = ref<HTMLElement | null>(null)
 const listboxId = useId()
+
+const placementReady = ref(false)
+const resolvedPlacement = ref<DropdownPlacement>('bottom-start')
+const panelTop = ref(0)
+const panelLeft = ref(0)
+const panelMinWidth = ref<number | undefined>(undefined)
 
 /** Block ghost `click` on trigger right after option pick (panel gone, same coords; esp. mobile). */
 const ignoreTriggerToggleUntil = ref(0)
 
 let docClickHandler: ((e: MouseEvent) => void) | null = null
+let repositionHandler: (() => void) | null = null
+let resizeObserver: ResizeObserver | null = null
+let placementFrame: number | null = null
+
+const panelVertical = computed(() => (resolvedPlacement.value.startsWith('top') ? 'top' : 'bottom'))
+
+const panelInlineStyle = computed(() => ({
+	top: `${panelTop.value}px`,
+	left: `${panelLeft.value}px`,
+	minWidth: panelMinWidth.value ? `${panelMinWidth.value}px` : undefined,
+	visibility: (placementReady.value ? 'visible' : 'hidden') as 'visible' | 'hidden',
+}))
 
 function removeDocClick(): void {
 	if (docClickHandler) {
 		document.removeEventListener('click', docClickHandler)
 		docClickHandler = null
 	}
+}
+
+function removeRepositionListeners(): void {
+	if (repositionHandler) {
+		window.removeEventListener('resize', repositionHandler)
+		window.removeEventListener('scroll', repositionHandler, true)
+		repositionHandler = null
+	}
+}
+
+function cancelPlacementFrame(): void {
+	if (placementFrame !== null) {
+		cancelAnimationFrame(placementFrame)
+		placementFrame = null
+	}
+}
+
+function removeResizeObserver(): void {
+	resizeObserver?.disconnect()
+	resizeObserver = null
+}
+
+function updatePlacement(): void {
+	const anchor = triggerRef.value
+	const panel = panelRef.value
+	if (!anchor || !panel) return
+
+	const anchorRect = anchor.getBoundingClientRect()
+	const panelRect = panel.getBoundingClientRect()
+	const preferTop = props.placement === 'top'
+	const style = getDropdownPanelStyle(anchorRect, panelRect, 'start', PANEL_GAP)
+
+	// Honor explicit `placement="top"` when there is room; otherwise keep auto.
+	resolvedPlacement.value = preferTop && anchorRect.top > panelRect.height + PANEL_GAP + 8 ? 'top-start' : style.placement
+	if (resolvedPlacement.value.startsWith('top')) {
+		panelTop.value = anchorRect.top - PANEL_GAP - panelRect.height
+	} else {
+		panelTop.value = style.top
+	}
+	panelLeft.value = style.left
+	panelMinWidth.value = style.minWidth
+	placementReady.value = true
+}
+
+function schedulePlacement(): void {
+	cancelPlacementFrame()
+	nextTick(() => {
+		placementFrame = requestAnimationFrame(() => {
+			placementFrame = null
+			updatePlacement()
+		})
+	})
+}
+
+function addResizeObserver(): void {
+	removeResizeObserver()
+	const panel = panelRef.value
+	if (!panel) return
+
+	resizeObserver = new ResizeObserver(() => schedulePlacement())
+	resizeObserver.observe(panel)
+}
+
+function addRepositionListeners(): void {
+	removeRepositionListeners()
+	repositionHandler = () => schedulePlacement()
+	window.addEventListener('resize', repositionHandler)
+	window.addEventListener('scroll', repositionHandler, true)
 }
 
 function close(): void {
@@ -63,21 +159,34 @@ function selectValue(value: string): void {
 
 watch(open, (isOpen) => {
 	removeDocClick()
+	removeRepositionListeners()
+	removeResizeObserver()
+
 	if (isOpen) {
+		placementReady.value = false
+		panelMinWidth.value = triggerRef.value?.getBoundingClientRect().width
 		document.addEventListener('keydown', onEscape)
+		addRepositionListeners()
+
+		schedulePlacement()
 		nextTick(() => {
+			addResizeObserver()
 			docClickHandler = (e: MouseEvent) => {
-				if (root.value && !root.value.contains(e.target as Node)) close()
+				const target = e.target as Node
+				const insideRoot = root.value?.contains(target) ?? false
+				const insidePanel = panelRef.value?.contains(target) ?? false
+				if (!insideRoot && !insidePanel) close()
 			}
 			document.addEventListener('click', docClickHandler)
 		})
 	} else {
+		placementReady.value = false
+		panelMinWidth.value = undefined
 		document.removeEventListener('keydown', onEscape)
 	}
 })
 
 // If the bound value changes while open, always close.
-// This covers cases where selection happens via parent-side updates.
 watch(
 	() => props.modelValue,
 	(next, prev) => {
@@ -88,7 +197,10 @@ watch(
 )
 
 onUnmounted(() => {
+	cancelPlacementFrame()
 	removeDocClick()
+	removeRepositionListeners()
+	removeResizeObserver()
 	document.removeEventListener('keydown', onEscape)
 })
 
@@ -104,8 +216,9 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 </script>
 
 <template>
-	<div ref="root" class="ui-select" :class="[`ui-select--${size}`, { 'ui-select--open': open, 'ui-select--placement-top': placement === 'top' }]">
+	<div ref="root" class="ui-select" :class="[`ui-select--${size}`, { 'ui-select--open': open }]">
 		<button
+			ref="triggerRef"
 			type="button"
 			class="ui-select__trigger"
 			:class="{ 'ui-select__trigger--placeholder': isPlaceholder }"
@@ -124,13 +237,23 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 				<UiIcon name="chevron_right" :size="12" />
 			</span>
 		</button>
-		<Transition name="ui-select-panel">
-			<div v-if="open" :id="listboxId" class="ui-select__panel" role="listbox" aria-orientation="vertical">
-				<div v-for="opt in options" :key="opt.value" role="option" class="ui-select__option" :aria-selected="modelValue === opt.value" @click.stop="selectValue(opt.value)">
-					{{ opt.label }}
+		<Teleport to="body">
+			<Transition :name="`ui-select-panel-${panelVertical}`">
+				<div
+					v-if="open"
+					:id="listboxId"
+					ref="panelRef"
+					class="ui-select__panel"
+					:style="panelInlineStyle"
+					role="listbox"
+					aria-orientation="vertical"
+				>
+					<div v-for="opt in options" :key="opt.value" role="option" class="ui-select__option" :aria-selected="modelValue === opt.value" @click.stop="selectValue(opt.value)">
+						{{ opt.label }}
+					</div>
 				</div>
-			</div>
-		</Transition>
+			</Transition>
+		</Teleport>
 	</div>
 </template>
 
@@ -194,18 +317,9 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 	transform: rotate(270deg);
 }
 
-.ui-select--placement-top .ui-select__panel {
-	top: auto;
-	bottom: calc(100% + #{$space-2});
-}
-
 .ui-select__panel {
-	position: absolute;
-	top: calc(100% + #{$space-2});
-	left: 0;
-	right: 0;
-	// Must float above app content (e.g., editors with their own stacking contexts).
-	z-index: 10100;
+	position: fixed;
+	z-index: $z-popover;
 	padding: $space-1;
 	background: var(--color-bg-surface);
 	border: 1px solid var(--color-border);
@@ -216,7 +330,6 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 	gap: $space-1;
 	max-height: min(16rem, 50vh);
 	overflow-y: auto;
-	// Let touch scrolling win over option activation; click selects after a real tap.
 	touch-action: pan-y;
 	-webkit-overflow-scrolling: touch;
 	overscroll-behavior: contain;
@@ -245,21 +358,24 @@ const isPlaceholder = computed(() => props.placeholder !== undefined && !selecte
 	}
 }
 
-.ui-select-panel-enter-active,
-.ui-select-panel-leave-active {
+.ui-select-panel-bottom-enter-active,
+.ui-select-panel-bottom-leave-active,
+.ui-select-panel-top-enter-active,
+.ui-select-panel-top-leave-active {
 	transition:
 		opacity $duration-normal $easing-default,
 		transform $duration-normal $easing-default;
 }
 
-.ui-select-panel-enter-from,
-.ui-select-panel-leave-to {
+.ui-select-panel-bottom-enter-from,
+.ui-select-panel-bottom-leave-to {
 	opacity: 0;
 	transform: translateY(-4px);
 }
 
-.ui-select--placement-top .ui-select-panel-enter-from,
-.ui-select--placement-top .ui-select-panel-leave-to {
+.ui-select-panel-top-enter-from,
+.ui-select-panel-top-leave-to {
+	opacity: 0;
 	transform: translateY(4px);
 }
 

@@ -41,7 +41,7 @@ function toneClass(tone: UiToastTone): string {
 	top: max($space-4, env(safe-area-inset-top, 0px));
 	right: $space-4;
 	left: $space-4;
-	z-index: 1500;
+	z-index: $z-toast;
 	display: flex;
 	justify-content: center;
 	pointer-events: none;

@@ -67,3 +67,10 @@ $duration-fast: 120ms;
 $duration-normal: 200ms;
 $duration-slow: 300ms;
 $easing-default: ease;
+
+// ─── Z-index scale ──────────────────────────────────────────────────────────────
+// Centralized stacking order so overlays layer intentionally.
+$z-tooltip: 6500;
+$z-modal: 10000;
+$z-popover: 10100;
+$z-toast: 11000;

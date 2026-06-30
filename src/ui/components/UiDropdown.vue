@@ -6,9 +6,19 @@ const props = withDefaults(
 	defineProps<{
 		/** Preferred menu alignment relative to trigger */
 		align?: 'start' | 'end'
+		/** Panel sizing (px or CSS length). */
+		panelWidth?: number | string
+		panelMinWidth?: number | string
+		panelMaxWidth?: number | string
+		/** Extra class for the teleported panel. */
+		panelClass?: string
 	}>(),
 	{
 		align: 'start',
+		panelWidth: undefined,
+		panelMinWidth: undefined,
+		panelMaxWidth: undefined,
+		panelClass: undefined,
 	},
 )
 
@@ -32,10 +42,17 @@ let placementFrame: number | null = null
 
 const panelVertical = computed(() => (resolvedPlacement.value.startsWith('top') ? 'top' : 'bottom'))
 
+function toLength(value: number | string | undefined): string | undefined {
+	if (value === undefined) return undefined
+	return typeof value === 'number' ? `${value}px` : value
+}
+
 const panelInlineStyle = computed(() => ({
 	top: `${panelTop.value}px`,
 	left: `${panelLeft.value}px`,
-	minWidth: panelMinWidth.value ? `${panelMinWidth.value}px` : undefined,
+	width: toLength(props.panelWidth),
+	minWidth: toLength(props.panelMinWidth) ?? (panelMinWidth.value ? `${panelMinWidth.value}px` : undefined),
+	maxWidth: toLength(props.panelMaxWidth),
 	visibility: (placementReady.value ? 'visible' : 'hidden') as 'visible' | 'hidden',
 }))
 
@@ -168,8 +185,9 @@ onUnmounted(() => {
 		</div>
 		<Teleport to="body">
 			<Transition :name="`ui-dropdown-${panelVertical}`">
-				<div v-if="open" ref="panelRef" class="ui-dropdown__panel" :class="`ui-dropdown__panel--${panelVertical}`" :style="panelInlineStyle" role="menu" aria-orientation="vertical">
+				<div v-if="open" ref="panelRef" class="ui-dropdown__panel" :class="[`ui-dropdown__panel--${panelVertical}`, panelClass]" :style="panelInlineStyle" role="menu" aria-orientation="vertical">
 					<slot :close="close" />
+					<slot name="empty" />
 				</div>
 			</Transition>
 		</Teleport>
@@ -191,7 +209,7 @@ onUnmounted(() => {
 
 .ui-dropdown__panel {
 	position: fixed;
-	z-index: 10100;
+	z-index: $z-popover;
 	min-width: 11rem;
 	padding: $space-1;
 	background: var(--color-bg-surface);
