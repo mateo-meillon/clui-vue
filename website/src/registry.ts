@@ -101,6 +101,13 @@ export const galleryRegistry: GalleryEntry[] = [
 		preview: () => import('./previews/Skeleton.preview.vue'),
 	},
 	{
+		slug: 'spinner',
+		title: 'Spinner',
+		shortDescription: 'Inline loading indicator.',
+		playground: () => import('./playgrounds/Spinner.playground.vue'),
+		preview: () => import('./previews/Spinner.preview.vue'),
+	},
+	{
 		slug: 'tree',
 		title: 'Tree',
 		shortDescription: 'Expandable navigation-style lists.',

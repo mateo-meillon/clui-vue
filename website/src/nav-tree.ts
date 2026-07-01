@@ -17,6 +17,7 @@ const playgroundIcons: Record<string, IconName> = {
 	menu: 'menu_open',
 	modal: 'chat_bubble',
 	skeleton: 'deblur',
+	spinner: 'progress_activity',
 	tree: 'account_tree',
 	breadcrumbs: 'chevron_right',
 	toast: 'notifications',

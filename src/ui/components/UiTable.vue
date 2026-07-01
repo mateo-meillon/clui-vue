@@ -7,6 +7,7 @@ import UiDropdown from './UiDropdown.vue'
 import UiMenu from './UiMenu.vue'
 import UiMenuItem from './UiMenuItem.vue'
 import UiSelect from './UiSelect.vue'
+import UiSpinner from './UiSpinner.vue'
 import type {
 	SelectOption,
 	UiTableChange,
@@ -532,7 +533,7 @@ function emitChange(action: UiTableChange<Row>['action']): void {
 					<tr v-if="loading">
 						<td class="ui-table__state" :colspan="colSpan">
 							<slot name="loading">
-								<span class="ui-table__spinner" />
+								<UiSpinner class="ui-table__spinner" :size="14" decorative />
 								<span>Loading</span>
 							</slot>
 						</td>
@@ -833,15 +834,9 @@ function emitChange(action: UiTableChange<Row>['action']): void {
 }
 
 .ui-table__spinner {
-	display: inline-block;
-	width: 14px;
-	height: 14px;
 	margin-right: $space-2;
-	border: 2px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
-	border-top-color: var(--color-primary);
-	border-radius: $radius-full;
+	color: var(--color-primary);
 	vertical-align: -2px;
-	animation: ui-table-spin 800ms linear infinite;
 }
 
 .ui-table__expanded-row td {
@@ -885,9 +880,4 @@ function emitChange(action: UiTableChange<Row>['action']): void {
 	text-align: center;
 }
 
-@keyframes ui-table-spin {
-	to {
-		transform: rotate(360deg);
-	}
-}
 </style>

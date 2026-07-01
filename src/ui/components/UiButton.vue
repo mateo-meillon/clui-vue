@@ -2,6 +2,7 @@
 import { Comment, Fragment, Text, computed, onBeforeUpdate, onUpdated, ref, useSlots, type Slots, type VNode } from 'vue'
 import { useDefaults } from '../config'
 import type { IconName, UiSize, UiVariant } from '../types'
+import UiSpinner from './UiSpinner.vue'
 
 const props = withDefaults(
 	defineProps<{
@@ -109,8 +110,10 @@ onUpdated(syncDefaultSlotContent)
 const hasLabelText = computed<boolean>(() => hasDefaultSlotContent.value || !!props.label)
 const iconOnly = computed<boolean>(() => !!props.icon && !hasLabelText.value)
 const withIconLabel = computed<boolean>(() => !!props.icon && hasLabelText.value)
+const stackedLabel = computed<boolean>(() => props.layout === 'stack' || props.multiline)
 
 const resolvedIconSize = computed<number | string>(() => props.iconSize ?? 18)
+const spinnerSize = computed(() => (size.value === 'sm' ? 14 : size.value === 'lg' ? 20 : 18))
 
 const useAnchor = computed(() => !!(props.href && !props.disabled && !props.loading))
 
@@ -160,9 +163,9 @@ const inlineStyle = computed(() => {
 		:disabled="useAnchor ? undefined : disabled || loading"
 		@click="$emit('click', $event)"
 	>
-		<span v-if="loading" class="ui-button__spinner" />
+		<UiSpinner v-if="loading" class="ui-button__spinner" :size="spinnerSize" decorative />
 		<UiIcon v-else-if="icon" :name="icon" :size="resolvedIconSize" :class="iconClass" />
-		<span v-if="withIconLabel" class="ui-button__label"><slot :active="active">{{ label }}</slot></span>
+		<span v-if="withIconLabel" class="ui-button__label" :class="{ 'ui-button__label--stack': stackedLabel }"><slot :active="active">{{ label }}</slot></span>
 		<slot v-else :active="active">{{ label }}</slot>
 	</component>
 </template>
@@ -377,9 +380,11 @@ const inlineStyle = computed(() => {
 		min-width: 0;
 	}
 
-	&--multiline &__label,
-	&--stack &__label {
+	&__label--stack {
+		flex-direction: column;
+		gap: 2px;
 		height: auto;
+		line-height: 1.25;
 		white-space: normal;
 	}
 
@@ -400,34 +405,14 @@ const inlineStyle = computed(() => {
 		height: auto;
 	}
 
+	&--sm &__label--stack,
+	&--md &__label--stack,
+	&--lg &__label--stack {
+		height: auto;
+	}
+
 	&__spinner {
-		flex-shrink: 0;
-		border: 2px solid currentColor;
-		border-right-color: transparent;
-		border-radius: $radius-full;
-		animation: ui-button-spin 0.6s linear infinite;
 		opacity: 0.6;
-	}
-
-	&--sm &__spinner {
-		width: 14px;
-		height: 14px;
-	}
-
-	&--md &__spinner {
-		width: 18px;
-		height: 18px;
-	}
-
-	&--lg &__spinner {
-		width: 20px;
-		height: 20px;
-	}
-}
-
-@keyframes ui-button-spin {
-	to {
-		transform: rotate(360deg);
 	}
 }
 </style>

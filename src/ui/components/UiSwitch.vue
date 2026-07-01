@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useDefaults } from '../config'
 import type { UiSize } from '../types'
+import UiSpinner from './UiSpinner.vue'
 
 const props = withDefaults(
 	defineProps<{
@@ -33,6 +34,8 @@ const emit = defineEmits<{
 
 const config = useDefaults('switch', props)
 const size = computed<Extract<UiSize, 'sm' | 'md'>>(() => config.value.size ?? 'md')
+const spinnerSize = computed(() => (size.value === 'sm' ? 8 : 12))
+const spinnerThickness = computed(() => (size.value === 'sm' ? 1.5 : 2))
 
 function toggle(): void {
 	if (props.disabled || props.loading) return
@@ -72,7 +75,7 @@ function toggle(): void {
 				<slot v-else name="unchecked" />
 			</span>
 			<span class="ui-switch__handle">
-				<span v-if="loading" class="ui-switch__spinner" />
+				<UiSpinner v-if="loading" class="ui-switch__spinner" :size="spinnerSize" :thickness="spinnerThickness" decorative />
 			</span>
 		</button>
 	</label>
@@ -100,7 +103,7 @@ function toggle(): void {
 			<slot v-else name="unchecked" />
 		</span>
 		<span class="ui-switch__handle">
-			<span v-if="loading" class="ui-switch__spinner" />
+			<UiSpinner v-if="loading" class="ui-switch__spinner" :size="spinnerSize" :thickness="spinnerThickness" decorative />
 		</span>
 	</button>
 </template>
@@ -207,11 +210,6 @@ function toggle(): void {
 			left: calc(100% - 14px);
 		}
 
-		.ui-switch__spinner {
-			width: 8px;
-			height: 8px;
-			border-width: 1.5px;
-		}
 	}
 
 	&--md {
@@ -236,10 +234,6 @@ function toggle(): void {
 			left: calc(100% - 20px);
 		}
 
-		.ui-switch__spinner {
-			width: 12px;
-			height: 12px;
-		}
 	}
 
 	&__inner {
@@ -269,17 +263,7 @@ function toggle(): void {
 	}
 
 	&__spinner {
-		flex-shrink: 0;
-		border: 2px solid var(--color-primary);
-		border-right-color: transparent;
-		border-radius: $radius-full;
-		animation: ui-switch-spin 0.6s linear infinite;
-	}
-}
-
-@keyframes ui-switch-spin {
-	to {
-		transform: rotate(360deg);
+		color: var(--color-primary);
 	}
 }
 </style>
