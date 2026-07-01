@@ -25,6 +25,7 @@ const playgroundIcons: Record<string, IconName> = {
 	switch: 'toggle_on',
 	tabs: 'tabs',
 	table: 'table_chart',
+	tooltip: 'tooltip',
 }
 
 export function buildGalleryNavTree(): UiTreeNode[] {
