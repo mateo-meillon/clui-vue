@@ -9,6 +9,7 @@ const playgroundIcons: Record<string, IconName> = {
 	input: 'text_fields',
 	textarea: 'notes',
 	'form-field': 'label',
+	checkbox: 'check_box',
 	select: 'arrow_drop_down_circle',
 	card: 'credit_card',
 	radio: 'radio_button_checked',

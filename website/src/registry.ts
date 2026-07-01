@@ -45,6 +45,13 @@ export const galleryRegistry: GalleryEntry[] = [
 		preview: () => import('./previews/FormField.preview.vue'),
 	},
 	{
+		slug: 'checkbox',
+		title: 'Checkbox',
+		shortDescription: 'Boolean checkbox with mixed state.',
+		playground: () => import('./playgrounds/Checkbox.playground.vue'),
+		preview: () => import('./previews/Checkbox.preview.vue'),
+	},
+	{
 		slug: 'select',
 		title: 'Select',
 		shortDescription: 'Custom dropdown select.',
@@ -145,7 +152,7 @@ export const galleryRegistry: GalleryEntry[] = [
 	{
 		slug: 'table',
 		title: 'Table',
-		shortDescription: 'Table wrapper and density.',
+		shortDescription: 'Data table with selection and filters.',
 		playground: () => import('./playgrounds/Table.playground.vue'),
 		preview: () => import('./previews/Table.preview.vue'),
 	},

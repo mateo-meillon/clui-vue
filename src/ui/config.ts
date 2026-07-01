@@ -34,6 +34,9 @@ export interface CluiDefaults {
 	radio?: {
 		size?: Extract<UiSize, 'sm' | 'md' | 'lg'>
 	}
+	checkbox?: {
+		size?: Extract<UiSize, 'sm' | 'md' | 'lg'>
+	}
 	table?: {
 		density?: 'compact' | 'comfortable'
 	}
